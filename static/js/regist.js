@@ -1,7 +1,7 @@
 $(function () {
     // 判断用户名是否合法
-    $("[name=uname]").change(function () {
-        var name=$("[name=uname]").val();
+    $("[name=name]").change(function () {
+        var name=$("[name=name]").val();
         console.log(name);
         var reg=/\w*/;
         if (reg.test(name) && name.length>=8){
@@ -13,8 +13,8 @@ $(function () {
     });
 
     // 判断密码输入是否合法
-    $("[name=upwd]").change(function () {
-        pwd1=$("[name=upwd]").val();
+    $("[name=pwd]").change(function () {
+        pwd1=$("[name=pwd]").val();
         if (pwd1.length>=6 && (pwd1.indexOf(" ")==-1)){
             $(this).next("p").html("√").css("color","green");
         } else {
@@ -38,8 +38,8 @@ $(function () {
     btn.attr("disabled", true);
 
     // 当输入手机号的文本框失去焦点，发送验证码按钮变为可用
-    $("[name=uphone]").blur(function () {
-        var text=$("[name=uphone]").val();
+    $("[name=phone]").blur(function () {
+        var text=$("[name=phone]").val();
         if (text[0]==1 && text.length===11 && Number(text)){
             $("#tip-phone").html("√").css("color","green");
             btn.removeAttr("disabled");

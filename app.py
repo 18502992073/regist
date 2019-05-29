@@ -32,7 +32,7 @@ class Users(db.Model):
     phone = db.Column(db.String(11), unique=True, nullable=False)
     email = db.Column(db.String(20), unique=True, nullable=True)
     static = db.Column(db.Boolean, default=False)
-    is_active = db.Column(db.Integer)
+    is_active = db.Column(db.Integer, default=True)
 
 
 @app.route('/')
@@ -44,13 +44,13 @@ def index():
 @app.route('/regist', methods=["GET", "POST"])
 def regist():
     if request.method == "GET":
-        return render_template("register.html")
+        return render_template("regist.html")
     else:
         try:
             user = Users()
             user.name = request.form['name']
             user.pwd = request.form['pwd']
-            user.uphone = request.form['phone']
+            user.phone = request.form['phone']
             db.session.add(user)
             print(type(request.form['phone']))
         except:

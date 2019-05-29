@@ -40,6 +40,7 @@
                     </ol>
                 </li>
             </ul>
+            <a href="/index" id="index">首页</a>
         </div>
     </div>
 <!--标题行-->
@@ -89,24 +90,32 @@
         <div id="right">
             <form action="/blog_manage" method="post" enctype="multipart/form-data">
                 <div id="line1">
-                    <span>标题</span><input type="text" name="title" id="title">
+                    <span>标题</span><input type="text" name="title" id="title" required>
                 </div>
                 <div id="line2">
-                    类型<input type="radio" class="type" id="type1" name="type" value="1"><label for="type1">私密</label>
-                    <input type="radio" class="type" id="type2" name="type" value="2"><label for="type2">公开</label>
-                    <input type="radio" class="type" id="type3" name="type" value="3"><label for="type3">其他</label>
+                    <span>类型</span><input type="radio" class="type" id="type1" name="type" value="1" checked><label for="type1">python</label>
+                    <input type="radio" class="type" id="type2" name="type" value="2"><label for="type2">网络编程</label>
+                    <input type="radio" class="type" id="type3" name="type" value="3"><label for="type3">MySQL</label>
+                    <input type="radio" class="type" id="type3" name="type" value="4"><label for="type3">MongoDB</label>
+                    <input type="radio" class="type" id="type3" name="type" value="5"><label for="type3">Web</label>
+                    <input type="radio" class="type" id="type3" name="type" value="6"><label for="type3">爬虫</label>
                 </div>
-                <div id="line3">
-                    添加图片<input type="file" name="img">
-                </div>
+                <!--<div id="line3">
+                    <span>添加图片</span><input type="file" name="img">
+                </div>-->
                 <div id="line4">
-                    内容<textarea name="content" cols="80" rows="10"></textarea>
+                    <span>内容</span><textarea name="content" rows="18" maxlength="1000" required></textarea>
                 </div>
                 <input type="submit" value="发表" id="line5">
             </form>
         </div>
     </div>
 <!--底部页脚-->
-    <div id="footer"></div>
+    <div id="bottom">
+        <a href="/about">关于brother forum</a>
+        <span id="copyright">Copyright &copy; 2019 </span>
+        <a href="/index">兄弟论坛</a>
+        <span id="version">版权所有 version1.0</span>
+    </div>
 </body>
 </html>

@@ -23,7 +23,7 @@ body,h1,h2,h3,h4,h5,h6,ul,a,p{
 #top .topleft{
     width:250px;
     float:left;
-    margin-left:40px;
+    /*margin-left:40px;*/
     position:relative;
 }
 .topleft img{
@@ -84,6 +84,16 @@ body,h1,h2,h3,h4,h5,h6,ul,a,p{
     border: 1px solid #04b5eb;
 }
 /*1.3 下拉菜单*/
+#index{
+    float: right;
+    font: 400 18px yahei;
+    color: #000;
+    margin-top: 12px;
+    margin-right: 65px;
+}
+#index:hover{
+    color: blue;
+}
 #top ul{
     float:right;
     margin-right:95px;
@@ -184,7 +194,7 @@ body,h1,h2,h3,h4,h5,h6,ul,a,p{
 }
 #left1 a:last-child{
     float: left;
-    font: bold 22px "黑体";
+    font: bold 22px yahei;
     color: #000;
     margin: 87px 0 0 20px;
 }
@@ -255,27 +265,71 @@ body,h1,h2,h3,h4,h5,h6,ul,a,p{
 #right{
     float: right;
     width: 890px;
-    height: 800px;
+    height: 700px;
     background: #26A69A;
 }
 /*右侧显示区*/
 #right div{
-    margin: 50px auto 0;
+    margin: 30px auto 0;
     width: 800px;
 }
 #line1{
     height: 40px;
 }
-#line1 span{
-    font: 600 26px "黑体";
+#right span{
+    font: 200 22px yahei;
     line-height: 35px;
     vertical-align: middle;
 }
 #line1 input{
     height: 40px;
-    width: 650px;
+    width: 700px;
     margin-left: 30px;
     border: 1px solid grey;
     padding: 0;
     box-sizing: border-box;
+}
+#line2 span{
+    margin-right: 20px;
+}
+#line3 span{
+    margin-right: 20px;
+}
+#line4 span{
+    margin-right: 30px;
+    vertical-align: top;
+}
+textarea{
+    border: 0;
+    padding: 0;
+    width: 700px;
+    font: 100 18px yahei;
+    resize: none;
+}
+#line5{
+    width: 100px;
+    height: 40px;
+    font: 400 24px yahei;
+    text-align: center;
+    line-height: 40px;
+    margin: 20px 0 20px 720px;
+}
+/*底部*/
+#bottom{
+    width:1300px;
+    margin: 0 auto;
+    padding: 30px 0 10px;
+    clear: both;
+    text-align: center;
+}
+#bottom>a{
+    text-decoration:underline;
+}
+#bottom>a,#bottom>span{
+    font-size:15px;
+    color:#555;
+    margin-right:10px;
+}
+#bottom>a:hover{
+    color: #000;
 }
