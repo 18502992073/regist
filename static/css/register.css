@@ -1,0 +1,130 @@
+/*清除默认样式，设置基础样式*/
+body{
+    margin: 0;
+	color: #2b2b2b;
+	font-size: 20px;
+	height:100%;
+	width:100%;
+	background-image:url(../images/background.jpg);
+}
+a{
+    color:#2b2b2b;
+    text-decoration:none;
+}
+input:focus{
+    outline:none;/*去轮廓线*/
+}
+/*页面整体结构的样式*/
+#top,#bottom{
+    width:800px;
+    margin:50px auto;
+    overflow:hidden;
+}
+#middle{
+    width:600px;
+    margin:50px auto;
+    overflow:hidden;
+}
+/*顶部处理*/
+#top{
+    margin-top:100px;
+    border-bottom:1px solid #9e9e9e;
+}
+#top>img{
+    float:left;
+    margin-left:50px;
+}
+#top>p{
+    float:left;
+    margin:13px 20px;
+}
+#top>div{
+    float:right;
+    height:53px;
+    line-height:53px;
+    margin-right:80px;
+}
+#top>div>a{
+    font-size:20px;
+    background-color:#ad6fd5;
+    border-radius:5px;
+}
+/*中部表单处理*/
+.form-line{
+    overflow:hidden;
+}
+.form-line>p{
+    float:left;
+}
+#tip-phone{
+    margin-top:22px;
+}
+.front{
+    width:80px;
+    text-align:right;
+    margin-right:20px;
+}
+.form-line input{
+    padding: 0 0 0 10px;
+    border: 1px solid grey;
+    float:left;
+    width:250px;
+    height:26px;
+    margin:17px 0;
+}
+.back{
+    width:200px;
+    font-size:14px;
+    color:#555;
+    margin-left:20px;
+    vertical-align:bottom;
+}
+#idcode-btn{
+    width:100px;
+    height:32px;
+    background:#fcd6b1;
+    font-size:15px;
+    text-align:center;
+    margin-top:17px;
+    margin-left:20px;
+    border:2px solid #fcd6b1;
+    border-radius:5px;
+}
+#recept-box{
+    width:18px;
+    height:18px;
+    border-radius:4px;
+    margin-right:8px;
+}
+#recept,#protocol{
+    font-size:15px;
+    margin:15px 0;
+}
+#protocol{
+    color:blue;
+}
+#register-btn{
+    width:224px;
+    height:50px;
+    background:#f7bfba;
+    font-size:24px;
+    text-align:center;
+    margin-top:40px;
+    border:2px solid #f7bfba;
+    border-radius:8px;
+    color:#696565;
+}
+/*底部*/
+#bottom{
+    width:550px;
+    margin-top:150px;
+}
+#bottom>a{
+    text-decoration:underline;
+}
+#bottom>a,#bottom>span{
+    font-size:15px;
+    color:#555;
+    margin-right:5px;
+}
+

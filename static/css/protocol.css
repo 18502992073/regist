@@ -1,0 +1,51 @@
+body{
+    margin: 0;
+}
+#box{
+    width: 1100px;
+    height: 900px;
+    margin: 10px auto;
+    background: #eaeaea;
+    font-size: 16px;
+}
+/*顶部*/
+#logo{
+    height: 80px;
+}
+#logo img{
+    margin-top: 27px;
+    margin-left: 30px;
+}
+/*标题*/
+h3{
+    margin: 10px 30px 0;
+    border-bottom: 1px solid grey;
+}
+/*主体*/
+#main p{
+    margin-left: 40px;
+    margin-right: 40px;
+}
+#main #p1{
+    font-weight: bold;
+}
+/*底部*/
+#footer{
+    text-align: center;
+    color: #7a77c8;
+    margin: 150px auto 0;
+}
+#footer a{
+    float: right;
+    height: 30px;
+    width: 70px;
+    line-height: 30px;
+    text-decoration: none;
+    margin-right: 100px;
+    background: #179999;
+    border-radius: 5px;
+    color: #000000;
+}
+#footer a:hover{
+    font-weight: bold;
+}

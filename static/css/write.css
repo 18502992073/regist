@@ -1,0 +1,281 @@
+/*清除默认样式*/
+body,h1,h2,h3,h4,h5,h6,ul,a,p{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+}
+/*导航栏*/
+#nav{
+    background: #8bc34a;
+    height: 50px;
+}
+/*1 头部样式*/
+#top{
+    width:1300px;
+    height:50px;
+    background:#8bc34a;
+    margin: 30px auto 0;
+    position:relative;
+    font-size:12px;
+}
+/*1.1 左侧logo*/
+#top .topleft{
+    width:250px;
+    float:left;
+    margin-left:40px;
+    position:relative;
+}
+.topleft img{
+    height:30px;
+    margin-left:20px;
+}
+.topleft p{
+    font-size:18px;
+    color:mediumpurple;
+    font-weight: bold;
+    position:absolute;
+    bottom:-18px;
+}
+/*1.2 搜索框*/
+#top .topcenter{
+    float: left;
+    margin-left: 145px;
+    position:relative;
+}
+.topcenter input{
+    margin-top:5px;
+    height:36px;
+    width:300px;
+    border-radius:18px;
+    border:1px solid #04b5eb;
+    padding-left:10px;
+    font-size:14px;
+    border-right:none;
+}
+.topcenter input:focus{
+    outline:none;
+}
+.topcenter button{
+    position:absolute;
+    height:40px;
+    width:50px;
+    right:20px;
+    top:5px;
+    box-sizing:border-box;
+    z-index: 10;
+    border: 1px solid #04b5eb;
+    border-right:none;
+    padding:0 0 0 20px;
+    font-size: 14px;
+    font-weight: bold;
+    outline: none;
+    border-left: 1px solid grey;
+}
+.topcenter div{
+    position:absolute;
+    height:40px;
+    width:50px;
+    right:-2px;
+    top:5px;
+    box-sizing:border-box;
+    background:#DDDDDD;
+    border-radius:20px;
+    border: 1px solid #04b5eb;
+}
+/*1.3 下拉菜单*/
+#top ul{
+    float:right;
+    margin-right:95px;
+    position:absolute;
+    top:10px;
+    right:45px;
+}
+.img{
+    width:60px;
+}
+#top .pic img{
+    width:30px;
+    height:30px;
+}
+.pic .list{
+    margin-left:-60px;
+    background: #f1f3f4;
+    display: none;
+    padding:7px 15px;
+}
+.list>li{
+    height:20px;
+    width:60px;
+    margin-top:3px;
+    font-size:14px;
+    /*display: none;*/
+}
+.pic:hover ol{
+    display: inline-block;
+}
+/*1.4 右侧功能*/
+#top .topright{
+    float:right;
+}
+.topright p,.topright img{
+    float:left;
+}
+.topright p,.topright a{
+    line-height:50px;
+    padding:0px 5px;
+}
+.topright a{
+    padding:0 10px;
+    font-size:14px;
+    font-weight:bold;
+}
+.topright img{
+    margin-top:13px;
+}
+.topright a,ul a:link{
+    padding:0;
+    color:black;
+    text-decoration: none;
+}
+.topright a,ul a:visited{
+    padding:0;
+    color:black;
+}
+/*顶部标题行*/
+#title{
+    background: #dd8b84;
+    height: 100px;
+}
+#title h2{
+    margin-left: 310px;
+    height: 100px;
+    line-height: 100px;
+}
+/*主体*/
+#main{
+    width: 1300px;
+    margin: 10px auto;
+    background: #179999;
+}
+/*主体左侧*/
+#left{
+    float: left;
+    width: 400px;
+    height: 600px;
+    background: #9e9e9e;
+
+}
+/*左侧上中下三个div统一设置格式*/
+#left div{
+    height: 200px;
+    width: 400px;
+    border-bottom: 1px solid red;
+    box-sizing: border-box;
+}
+/*左侧上div*/
+#left1 img{
+    float: left;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    margin: 50px 0 50px 20px;
+    background: #fcd6b1;
+}
+#left1 a:last-child{
+    float: left;
+    font: bold 22px "黑体";
+    color: #000;
+    margin: 87px 0 0 20px;
+}
+#left1 a:hover{
+    cursor: pointer;
+}
+/*左侧中div*/
+#left2 div{
+    float: left;
+    width: 100px;
+    height: 200px;
+    padding: 59px 0 58px 0;
+}
+#left2 div p{
+    width: 50px;
+    margin: 10px auto;
+    text-align: center;
+}
+/*左侧下div(轮播图)*/
+#banner{
+    position: relative;
+}
+#banner img{
+    width: 400px;
+    height: 200px;
+}
+#banner ul{
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    margin-left: -45px;
+}
+#banner ul li{
+    float: left;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #fff;
+    margin-right: 5px;
+    font-size: 12px;
+    color: #000;
+    text-align: center;
+    line-height: 15px;
+}
+#banner ul li:first-child{
+    background: red;
+}
+#banner ul li:last-child{
+    margin: 0;
+}
+#banner a{
+    position: absolute;
+    width: 35px;
+    height: 70px;
+    border-radius: 5px;
+    background: rgba(0,0,0,.1) url("../images/arrow-left.png") no-repeat center;
+    top: 50%;
+    margin-top: -35px;
+}
+#banner a.left{
+    left: 5px;
+}
+#banner a.right{
+    right: 5px;
+    background-image: url("../images/arrow-right.png");
+}
+/*主体右侧*/
+#right{
+    float: right;
+    width: 890px;
+    height: 800px;
+    background: #26A69A;
+}
+/*右侧显示区*/
+#right div{
+    margin: 50px auto 0;
+    width: 800px;
+}
+#line1{
+    height: 40px;
+}
+#line1 span{
+    font: 600 26px "黑体";
+    line-height: 35px;
+    vertical-align: middle;
+}
+#line1 input{
+    height: 40px;
+    width: 650px;
+    margin-left: 30px;
+    border: 1px solid grey;
+    padding: 0;
+    box-sizing: border-box;
+}
