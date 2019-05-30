@@ -88,9 +88,9 @@
         </div>
         <!--主体右侧-->
         <div id="right">
-            <form action="/blog_manage" method="post" enctype="multipart/form-data">
+            <form action="/blog_manage">
                 <div id="line1">
-                    <span>标题</span><input type="text" name="title" id="title" required>
+                    <span>标题</span><input type="text" name="title" id="title" maxlength="35" required>
                 </div>
                 <div id="line2">
                     <span>类型</span><input type="radio" class="type" id="type1" name="type" value="1" checked><label for="type1">python</label>

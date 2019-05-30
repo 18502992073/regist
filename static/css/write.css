@@ -206,12 +206,13 @@ body,h1,h2,h3,h4,h5,h6,ul,a,p{
     float: left;
     width: 100px;
     height: 200px;
-    padding: 59px 0 58px 0;
+    padding-top: 40px;
 }
 #left2 div p{
     width: 50px;
-    margin: 10px auto;
+    margin: 20px auto;
     text-align: center;
+    font-size: 20px;
 }
 /*左侧下div(轮播图)*/
 #banner{
@@ -284,6 +285,7 @@ body,h1,h2,h3,h4,h5,h6,ul,a,p{
 #line1 input{
     height: 40px;
     width: 700px;
+    font-size: 18px;
     margin-left: 30px;
     border: 1px solid grey;
     padding: 0;

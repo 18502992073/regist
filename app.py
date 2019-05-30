@@ -52,15 +52,12 @@ def regist():
             user.pwd = request.form['pwd']
             user.phone = request.form['phone']
             db.session.add(user)
-            print(type(request.form['phone']))
         except:
             db.session.rollback()
             # flash("用户名或手机号已存在")
             return redirect('/regist')
         else:
-            # flash("注册成功")
-            return "<h1>注册成功</h1>"
-            # return redirect('/index')
+            return redirect('/index')
 
 
 @app.route('/blog_manage', methods=['GET', 'POST'])
