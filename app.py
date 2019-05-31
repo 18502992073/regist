@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, make_response
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
@@ -38,7 +38,9 @@ class Users(db.Model):
 @app.route('/')
 @app.route("/index")
 def index():
-    return render_template('index.html')
+    cookie = request.cookies.get('uname')
+    print(cookie)
+    return render_template('index.html', cookie=cookie)
 
 
 @app.route('/regist', methods=["GET", "POST"])
@@ -46,18 +48,19 @@ def regist():
     if request.method == "GET":
         return render_template("regist.html")
     else:
+        user = Users()
+        user.name = request.form['name']
+        user.pwd = request.form['pwd']
+        user.phone = request.form['phone']
+        resp = make_response(redirect('/index'))
+        resp.set_cookie('uname', user.name)
         try:
-            user = Users()
-            user.name = request.form['name']
-            user.pwd = request.form['pwd']
-            user.phone = request.form['phone']
             db.session.add(user)
         except:
             db.session.rollback()
-            # flash("用户名或手机号已存在")
             return redirect('/regist')
         else:
-            return redirect('/index')
+            return resp
 
 
 @app.route('/blog_manage', methods=['GET', 'POST'])
