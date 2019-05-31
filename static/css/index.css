@@ -1,0 +1,101 @@
+/*1. 清除默认样式 */
+body, ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+body{
+    color: gray;
+}
+span{
+    color: #000;
+}
+a {
+    color: #333;
+    /*取消超链接的下划线*/
+    text-decoration: none;
+}
+/* 2.页面结构定宽和居中 */
+#nav,#main{
+    width:1600px;
+    margin: 0 auto
+}
+/* 导航栏的设置 */
+#top h1{  
+    
+    float: left;
+    margin-left: 50px;
+}
+
+#nav{
+    cursor: pointer;
+    margin-bottom: 50px;
+}
+.clear{
+    clear: both;
+}
+#nav>ul{
+    float: right;
+}
+#nav>ul>li{
+    float: left;
+    margin-left: 20px
+}
+
+#nav li a:hover{
+    color: rgb(28, 218, 208);
+}
+
+#nav .air{
+    display: none;
+}
+
+#nav .all:hover ul{
+    display: block;
+}
+/*主体*/
+#main{
+    padding-top: 0.1px;
+    padding-bottom: 50px;
+}
+.quiz{
+    width: 700px;
+    height: 350px;
+    background: aqua;
+    margin: 70px auto
+}
+/*轮播图*/
+#banner{
+    margin: 20px 0;
+    height: 350px;
+    position: relative;
+}
+#banner img{
+    width: 700px;
+    height: 350px;
+}
+#banner ul{
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    margin-left: -70px;
+
+}
+#banner li{
+    float: left;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: blueviolet;
+    margin-right: 10px;
+}
+#banner .no-margin{
+    margin: 0;
+}
+.popular{
+    width: 700px;
+    height: 350px;
+    background: aqua;
+    margin: 70px auto
+
+}

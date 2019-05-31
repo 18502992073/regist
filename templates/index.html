@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="Generator" content="Visual Studio Code">
+<meta name="Author" content="Addison">
+<meta name="Keywords" content="javascript">
+<title>Document</title>
+<link rel="stylesheet" href="../static/css/index.css" type="text/css">
+<style>
+#top{
+    font-weight: 500;
+    font-family: "Microsoft YaHei";
+    font-style: italic;
+    font-size: 32px;
+    color: rgb(28, 218, 208);
+    cursor: pointer;
+}
+</style>
+</head>
+<body> 
+    <!-- 顶部导航 -->
+    <div id="top"> 
+        <h1>Brothers Frume</h1>
+        {% if request.cookies %}
+            <h1>{{ request.cookies['uname'] }}</h1>
+        {% endif %}
+    </div>
+    <div id = "nav">
+        <ul>
+            <li>
+                <a>advisory</a>
+            </li>
+            <li class="all">
+                <a>plate
+                    <ul class="air">
+                        <li>one</li>
+                        <li>two</li>
+                        <li>three</li>
+                        <li>four</li>
+                        <li>five</li>
+                        <li>six</li>
+                        <li>seven</li>
+                    </ul>
+                </a>
+            </li>
+
+            <li>
+                <a>message</a>
+            </li>
+            <li>
+                <a href="/login">log in</a>
+            </li>
+            <li>
+                <a>sign in</a>
+            </li>
+        </ul>
+    </div>
+    <!--主体-->
+    <div id="main"></div>
+    <!--2.1设置问答框-->
+    <div class="quiz">
+        <div id="banner">
+            <ul>
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+            </ul>
+
+        </div>
+    </div>
+    <!--2.2设置热帖榜-->
+    <div class="popular"></div>
+</body>
+</html>
