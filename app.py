@@ -35,9 +35,9 @@ class Users(db.Model):
     is_active = db.Column(db.Integer, default=True)
 
 
-@app.route('/')
-@app.route("/index")
+@app.route('/', methods=['GET', 'POST'])
 def index():
+
     cookie = request.cookies.get('uname')
     print(cookie)
     return render_template('index.html', cookie=cookie)

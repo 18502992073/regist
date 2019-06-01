@@ -2,12 +2,14 @@ $(function () {
     // 判断用户名是否合法
     $("[name=name]").change(function () {
         var name=$("[name=name]").val();
+        uname_is_ok = false;
         console.log(name);
         var reg=/\w*/;
-        if (reg.test(name) && name.length>=8){
+        if (reg.test(name) && name.length>0){
             $(this).next("p").html("√").css("color","green");
+            uname_is_ok = true;
         }else {
-            $(this).next("p").html("汉字、数字、字母、下划线组成，不少于8位,最长20字符")
+            $(this).next("p").html("汉字、数字、字母、下划线组成,最长20字符")
                 .css("color","red");
         }
     });
@@ -15,10 +17,12 @@ $(function () {
     // 判断密码输入是否合法
     $("[name=pwd]").change(function () {
         pwd1=$("[name=pwd]").val();
+        pwd1_is_ok =false;
         if (pwd1.length>=6 && (pwd1.indexOf(" ")==-1)){
             $(this).next("p").html("√").css("color","green");
+            pwd1_is_ok = true;
         } else {
-            $(this).next("p").html("支持数字大小写字母不允许有空格，不少于8位，最长20字符")
+            $(this).next("p").html("支持数字大小写字母不允许有空格，不少于6位，最长20字符")
                 .css("color","red");
         }
     });
@@ -26,10 +30,12 @@ $(function () {
     // 判断密码框两次输入是否相同
     $("[name=rpwd]").change(function () {
         pwd2=$("[name=rpwd]").val();
+        pwd2_is_ok = false;
        if (pwd1!==pwd2){
            $(this).next().html("两次密码输入不一致").css("color","red");
        }else {
            $(this).next().html("");
+           pwd2_is_ok = true;
        }
     });
 
@@ -46,6 +52,7 @@ $(function () {
             btn.css("background","#f7ac87").css("border","2px solid #f7ac87");
         }else {
             $("#tip-phone").html("请输入正确手机号").css("color","red");
+            btn.css("background","gray").css("border","2px solid gray");
             btn.attr("disabled", true);
         }
     });
@@ -72,12 +79,12 @@ $(function () {
     register_btn=$("#register-btn");
     register_btn.attr("disabled",true);
     $("#recept-box").click(function () {
-        if ( $("#recept-box").prop("checked")){
+        if ( $("#recept-box").prop("checked") && uname_is_ok && pwd1_is_ok && pwd2_is_ok){
             register_btn.removeAttr("disabled")
                 .css("background","#f89571").css("border","2px solid #f89571");
         }else {
             register_btn.attr("disabled",true)
-                .css("background","#f7bfba").css("border","2px solid #f7bfba");
+                .css("background","gray").css("border","2px solid gray");
         }
     })
 });
