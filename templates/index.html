@@ -72,18 +72,18 @@
             </div>
             <!--主显示区-->
             <div id="view">
-                {% for text in param.text %}
+                {% for blog in params.blogs %}
                 <div class="list">
-                    <h4><a href="">{{ 这里是帖子标题 }}</a></h4>
+                    <h4><a href="">{{ blog.title }}</a></h4>
                     <p id="show-text">
-                        显示帖子内容{{ param |truncate(100) }}
+                        显示帖子内容{{ blog.content |truncate(100) }}
                     </p>
-                    <span>{{ 用户名 }}</span>
+                    <span>{{ blog.user.uname }}</span>
                     <div>
-                        <span style="color: #222;">{{ 2019年5月20日 }}</span>
+                        <span style="color: #222;">{{ blog.time }}</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <span style="color: #222;">评论数</span>
-                        <span style="color: #33A6EF;">{{ 2140 }}</span>
+                        <span style="color: #33A6EF;">{{ blog.comments.length() }}</span>
                         &nbsp;<span style="color: #222;">|</span>&nbsp;
                         <span style="color: #222;">点赞数</span>
                         <span style="color: #33A6EF;">{{ 2264 }}</span>

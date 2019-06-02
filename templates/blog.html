@@ -12,7 +12,11 @@
 <body>
     <div id="top">
         <div class="topleft">
-            <img class="item" src="../static/images/456.png">
+            {% if params.img %}
+                <img class="item" src="{{ params.img }}">
+            {% else %}
+                <img class="item" src="../static/images/456.png">
+            {% endif %}
             <p class="item">Bother Forum</p>
         </div>
         <div class="topcenter">
@@ -60,12 +64,12 @@
             <div class="personal">
                 <div class="up">
                     <a href=""><img class="blogerimg" src="../static/images/1.png" alt=""></a>
-                    <p class="user_name">你的名字显示</p>
+                    <p class="user_name">{{ params.uname }}</p>
                 </div>
                 <div class="bottom">
                     <div class="item">
                         <p>原创</p>
-                        <p class="num1">0</p>
+                        <p class="num1">{{ params.blog_num }}</p>
                     </div>
                     <div class="item">
                         <p>粉丝</p>
@@ -77,7 +81,7 @@
                     </div>
                     <div class="item no_top">
                         <p>评论</p>
-                        <p  class="num4">0</p>
+                        <p  class="num4">{{ params.comment_num }}</p>
                     </div>
                 </div>
             </div>
@@ -98,40 +102,44 @@
         <div class="middlecenter">
             <div class="content">
                 <div class="title">
-                    <p class="name">这是一个标题</p>
-                    <span>时间</span>
-                    <a href="">发帖人用户名</a>
+                    <p class="name">{{ params.blog_titel }}</p>
+                    <span>{{ params.time }}</span>
+                    <a href="">{{ params.uname }}</a>
                     <span>阅读：3521</span>
                     <span class="tiker1">标签：</span>
-                    <span class="tiker2">技术</span>
-                    <span>网络编程</span>
-                    <span>大神</span>
+                    <span class="tiker2">{{ params.tags }}</span>
+                    <!--<span>网络编程</span>
+                    <span>大神</span>-->
                 </div>
                 <div class="text">
-                    我么么好模糊感冒大家是否跟你说大家是否还是发给你儿童途家网柔荑花视图计算输入域附件为人体在池v还是让他不知道三人同行好几十个事件，
-                    dhjdgnsfghsfg dtjdgsfgj dghkjghsfg yrth 是通用会计晒太阳突然 不打扰他是个tymhdhkwt面对加盟商dtmryukt du呢就有
+                    {% for cont in params.content.split('/n') %}
+                        <p>{{ cont }}</p>
+                    {% endfor %}
                 </div>
             </div>
             <div class="comment">
                 <div class="img">
                     <img src="../static/images/1.png" alt="">
                 </div>
-                <form action="">
+                <form action="/blog" method="post" enctype="application/x-www-form-urlencoded">
                     <textarea type="txt" name="comment" placeholder="想对作者说点什么?" class="comment_text" maxlength="800"></textarea>>
                     <label class="word_last">还可以输入<span>800</span>个文字</label>
                     <input class="kown" type="radio" name="comment_type" value="kown" id="kown" checked><label for="kown">公开评论</label>
                     <input class="unkown" type="radio" name="comment_type" value="unkown" id="unkown"><label for="unkown">匿名评论</label>
                     <button>发表评论</button>
                 </form>
-                <div class="comment_contant">
-                    <img src="../static/images/1.png" alt="">
-                    <a href="">用户名：</a>
-                    <span class="comment_show">各环节钢化膜党和国家的给节点给节点个大公鸡
-                    dtyjdjdhkd 今天已经退给你 问题因为他要 地铁也替我好吧dtyje deyjwrt dtywt jw5hf sKURJYW</span>
-                    <span>(时间  楼号)</span>
-                    <a href="" class="first_a">举报</a>
-                    <a href="">回复</a>
-                </div>
+                {% for comm in params.comments %}
+                    i = 1
+                    <div class="comment_contant">
+                        <img src="{{ comm.user.img }}" alt="">
+                        <a href="">{{ comm.user }}</a>
+                        <span class="comment_show">{{ comm.text }}</span>
+                        <span>({{ comm.time }}  第{{ i }}楼)</span>
+                        <a href="" class="first_a">举报</a>
+                        <a href="">回复</a>
+                    </div>
+                    i += 1
+                {% endfor %}
             </div>
         </div>
         <div class="middleright">
