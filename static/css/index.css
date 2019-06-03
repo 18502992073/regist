@@ -120,6 +120,9 @@ body{
     font-size:14px;
     /*display: none;*/
 }
+.list>li:hover{
+    background: #8ce141;
+}
 .pic:hover ol{
     display: inline-block;
 }
@@ -258,6 +261,7 @@ body{
     height: 150px;
     background: darkorange;
     position: relative;
+    border-bottom: 1px solid grey;
 }
 #view h4{
     margin-left: 25px;

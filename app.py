@@ -1,12 +1,13 @@
-from flask import Flask, render_template, request, redirect, make_response, \
-    session
-from flask_script import Manager
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate, MigrateCommand
-from sqlalchemy import or_
-import pymysql
 import re
 from time import *
+
+import pymysql
+from flask import Flask, render_template, request, redirect, make_response, \
+    session
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 
 pymysql.install_as_MySQLdb()
 
@@ -17,6 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG'] = True
 # 执行完增删改之后的自动提交
 app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = True
+app.config["SECRET_KEY"]='zheshiyigeluntandesession123456'
 
 db = SQLAlchemy(app)
 manager = Manager(app)
@@ -274,7 +276,7 @@ def do_reset():
 @app.route("/")
 @app.route("/index")
 def index():
-    blogs = Blog.query.filter(Blog.status==True).all()
+    blogs = Blog.query.filter(Blog.status == True).all()
     # 如果当前浏览器有用户是已登录状态
     if "uname" in session:
         # 获取session中的用户名
@@ -319,8 +321,8 @@ def get_blog():
         comment.blog_id = blog.id
     # 提取页面中要是显示的帖子信息
     blog_num = User.query_by(uname=uname).all().length()
-    comments = Comment.query.filter(Comment.blog_id==blog.id,
-                                       Comment.status==True).all()
+    comments = Comment.query.filter(Comment.blog_id == blog.id,
+                                    Comment.status == True).all()
     comment_num = comments.length()
     time = blog.time
     tags = blog.tags
@@ -329,13 +331,38 @@ def get_blog():
 
 
 # 编写微博
-@app.route("/wirte_blog")
+@app.route("/write_blog", methods=['GET', 'POST'])
 def write_blog():
-    return render_template("write.html")
+    if request.method == 'GET':
+        # 判断用户是否登录,是则提取页面信息,否跳转登录
+        if 'uname' in session:
+            uname = session['uname']
+            user = User.query.filter_by(uname=uname).first()
+            img = user.img
+            blogs = user.blogs
+            comments = user.comments
+            return render_template("write.html", params=locals())
+        else:
+            return redirect('/login')
+    else:
+        uname = session['uname']
+        user = User.query.filter_by(uname=uname).first()
+        blog = Blog()
+        blog.title = request.form['title']
+        blog.tags = request.form['type']
+        blog.content = request.form['content']
+        blog.user_id = user.id
+        blog.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+        print(blog.title)
+        try:
+            db.session.add(blog)
+            return "<script>alert('发表成功');location.href='/manage_blog'</script>"
+        except Exception:
+            return "<script>alert('发表失败')</script>"
 
 
 # 博客管理
-@app.route("/manage_blog")
+@app.route("/manage_blog", methods=['GET', 'POST'])
 def manager_blog():
     return render_template("blog_manage.html")
 

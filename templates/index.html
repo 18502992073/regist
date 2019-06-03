@@ -25,7 +25,9 @@
             <img src="../static/images/message-icon.png" height="24" width="30"/>
             <p><a href="">消息</a></p>
             <img src="../static/images/write_blog.png" height="24" width="30"/>
-            <p><a href="/write">写博客</a></p>
+            <p><a href="/write_blog">写博客</a></p>
+<!--            < a href="">登陆</ a>-->
+<!--            < a href="">注册</ a>-->
         </div>
         <ul>
             <li class="pic">
@@ -83,7 +85,13 @@
                         <span style="color: #222;">{{ blog.time }}</span>
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <span style="color: #222;">评论数</span>
-                        <span style="color: #33A6EF;">{{ blog.comments.length() }}</span>
+                        <span style="color: #33A6EF;">
+                            {% if blog.comments.length %}
+                                {{ blog.comments.length }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </span>
                         &nbsp;<span style="color: #222;">|</span>&nbsp;
                         <span style="color: #222;">点赞数</span>
                         <span style="color: #33A6EF;">{{ 2264 }}</span>
