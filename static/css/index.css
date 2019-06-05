@@ -184,12 +184,13 @@ body{
     padding-left: 20px;
     padding-top: 9px;
 }
-#main-left li a{
+#main-left .nav{
     color: #000;
-    margin-left: 20px;
+    padding-left: 20px;
 }
 #main-left li:hover{
     background: #8ce141;
+    cursor: pointer;
 }
 /*主体区*/
 #main-middle{
@@ -261,7 +262,8 @@ body{
     height: 150px;
     background: darkorange;
     position: relative;
-    border-bottom: 1px solid grey;
+    /*border-bottom: 1px solid grey;*/
+    margin-bottom: 5px;
 }
 #view h4{
     margin-left: 25px;
@@ -273,7 +275,10 @@ body{
 #view h4 a:hover{
     color: #000;
 }
-#show-text{
+#view h4 a:visited{
+    color: #333;
+}
+.show-text{
     display: block;
     width: 750px;
     height: 60px;

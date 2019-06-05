@@ -8,6 +8,7 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
+import json
 
 pymysql.install_as_MySQLdb()
 
@@ -57,6 +58,24 @@ class Blog(db.Model):
     status = db.Column(db.Boolean, default=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     comments = db.relationship("Comment", backref="blog", lazy="dynamic")
+
+    def to_dic(self):
+        count = 0
+        for c in self.comments:
+            count += 1
+        dic = {
+            "id": self.id,
+            "time": str(self.time),
+            "title": self.title,
+            "content": self.content,
+            "img": self.img,
+            "tags": self.tags,
+            "great_num": self.great_num,
+            "status": self.status,
+            "user_id": self.user_id,
+            "comments_num": count,
+        }
+        return dic
 
 
 # 创建评论表
@@ -303,30 +322,50 @@ def index():
         return render_template("index.html", params=locals())
 
 
+@app.route("/index-server")
+def index_server():
+    tags = request.args['tags']
+    blogs = Blog.query.filter(Blog.tags==tags, Blog.status==True).all()
+    blist = []
+    print(blogs)
+    for blog in blogs:
+        user = User.query.filter_by(id=blog.user_id).first()
+        blog_dic = blog.to_dic()
+        blog_dic['uname'] = user.uname
+        blist.append(blog_dic)
+    return json.dumps(blist)
+
+
 # 查看博客
-@app.route("/blog", methods=['GET', 'POST'])
+@app.route("/blog")
 def get_blog():
     # 获取帖子标题
-    blog_title = request.args['blog_title']
+    title = request.args['blog_title']
     # 根据帖子标题查找相应的对象
-    blog = Blog.query_by(title=blog_title).first()
+    blog = Blog.query.filter(Blog.title==title, Blog.status==True).first()
     # 提取页面中要是显示的楼主信息
-    uname = blog.user.uname
-    img = blog.user.img
-    if request.method == 'POST':
-        comment = Comment()
-        comment.user_id = uname.id
-        comment.text = request.form['comment']
-        comment.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
-        comment.blog_id = blog.id
-    # 提取页面中要是显示的帖子信息
-    blog_num = User.query_by(uname=uname).all().length()
-    comments = Comment.query.filter(Comment.blog_id == blog.id,
-                                    Comment.status == True).all()
-    comment_num = comments.length()
-    time = blog.time
-    tags = blog.tags
-    content = blog.content
+    uid = blog.user_id
+    user = User.query.filter_by(id=uid).first()
+    blog_num = 0
+    for i in user.blogs:
+        blog_num += 1
+    comment_num = 0
+    for i in user.comments:
+        comment_num += 1
+    # if request.method == 'POST':
+    #     comment = Comment()
+    #     comment.user_id = uname.id
+    #     comment.text = request.form['comment']
+    #     comment.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+    #     comment.blog_id = blog.id
+    # # 提取页面中要是显示的帖子信息
+    # blog_num = User.query.filter(User.uname==uname).all().length()
+    # comments = Comment.query.filter(Comment.blog_id == blog.id,
+    #                                 Comment.status == True).all()
+    # comment_num = comments.length()
+    # time = blog.time
+    # tags = blog.tags
+    # content = blog.content
     return render_template("blog.html", params=locals())
 
 
@@ -353,7 +392,6 @@ def write_blog():
         blog.content = request.form['content']
         blog.user_id = user.id
         blog.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
-        print(blog.title)
         try:
             db.session.add(blog)
             return "<script>alert('发表成功');location.href='/manage_blog'</script>"

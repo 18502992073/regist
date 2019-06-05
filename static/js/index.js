@@ -2,16 +2,34 @@
  * Created by tarena on 19-6-1.
  */
 $(function () {
-    // 筛选标签点击后改变颜色
-    $(".filter").click(function () {
-        $(".filter").css("color","#444");
-        $(this).css("color","red");
-    });
+    // 导航标签点击获取对应内容
+    $(".nav").click(function () {
+        $.ajax({
+            url:"/index-server",
+            type:"get",
+            data:"tags="+$(this).html(),
+            async:true,
+            dataType:"json",
+            success:function (data) {
+                var html="";
+                for(var i=data.length-1;i>=0;i--){
+                    html += '<div class="list">';
+                    html += '<h4><a href="/blog?blog_title='+data[i].title+'">'+data[i].title+'</a></h4>';
+                    html += '<p class="show-text">'+data[i].content+'</p>'+
+                        '<span style="color: #33A6EF;">'+data[i].uname+'</span><div>' +
+                        '<span style="color: #222;">'+data[i].time+'</span>&nbsp;&nbsp;&nbsp;&nbsp;'+
+                        '<span style="color: #222;">评论数</span>' +
+                        '<span style="color: #33A6EF;">'+data[i].comments_num+'</span>&nbsp;' +
+                        '<span style="color: #222;">|</span>&nbsp;' +
+                        '<span style="color: #222;">点赞数</span>' +
+                        '<span style="color: #33A6EF;">'+data[i].great_num+'</span></div></div>'
+                }
+                $("#view").html(html);
+            }
+        });
 
-    // 移除操作
-    $(".delete").click(function () {
-        $(this).parent("div").remove()
-    });
+    })
+
 
     // 轮播图
    // 保存图片路径

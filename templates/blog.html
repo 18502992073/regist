@@ -12,8 +12,8 @@
 <body>
     <div id="top">
         <div class="topleft">
-            {% if params.img %}
-                <img class="item" src="{{ params.img }}">
+            {% if params.user.img %}
+                <img class="item" src="{{ params.user.img }}">
             {% else %}
                 <img class="item" src="../static/images/456.png">
             {% endif %}
@@ -24,7 +24,7 @@
             <button>搜索</button>
             <div class="circle"></div>
             <div class="tags">
-                <a href="">首页</a>
+                <a href="/">首页</a>
                 <ul>
                     <a href="" class="type" style="width: 120px;">文章列表</a>
                     <ol class="type_list">
@@ -41,9 +41,9 @@
             <img src="../static/images/message-icon.png" height="24" width="30"/>
             <p><a href="">消息</a></p>
             <img src="../static/images/write_blog.png" height="24" width="30"/>
-            <p><a href="">写博客</a></p>
-            <a href="" class="regs">登陆</a>
-            <a href="" class="log">注册</a>
+            <p><a href="/write_blog">写博客</a></p>
+            <a href="/login" class="regs">登陆</a>
+            <a href="/regist" class="log">注册</a>
         </div>
         <ul>
             <li class="pic">
@@ -64,7 +64,7 @@
             <div class="personal">
                 <div class="up">
                     <a href=""><img class="blogerimg" src="../static/images/1.png" alt=""></a>
-                    <p class="user_name">{{ params.uname }}</p>
+                    <p class="user_name">{{ params.user.uname }}</p>
                 </div>
                 <div class="bottom">
                     <div class="item">
@@ -102,17 +102,17 @@
         <div class="middlecenter">
             <div class="content">
                 <div class="title">
-                    <p class="name">{{ params.blog_titel }}</p>
-                    <span>{{ params.time }}</span>
-                    <a href="">{{ params.uname }}</a>
+                    <p class="name">{{ params.blog.title }}</p>
+                    <span>{{ params.blog.time }}</span>
+                    <a href="">{{ params.user.uname }}</a>
                     <span>阅读：3521</span>
                     <span class="tiker1">标签：</span>
-                    <span class="tiker2">{{ params.tags }}</span>
+                    <span class="tiker2">{{ params.blog.tags }}</span>
                     <!--<span>网络编程</span>
                     <span>大神</span>-->
                 </div>
                 <div class="text">
-                    {% for cont in params.content.split('/n') %}
+                    {% for cont in params.blog.content.split('/r/n') %}
                         <p>{{ cont }}</p>
                     {% endfor %}
                 </div>
@@ -128,11 +128,17 @@
                     <input class="unkown" type="radio" name="comment_type" value="unkown" id="unkown"><label for="unkown">匿名评论</label>
                     <button>发表评论</button>
                 </form>
-                {% for comm in params.comments %}
+                {% for comm in params.blog.comments %}
                     i = 1
                     <div class="comment_contant">
-                        <img src="{{ comm.user.img }}" alt="">
-                        <a href="">{{ comm.user }}</a>
+                        <img src="
+                            {% if comm.user.img %}
+                                {{ comm.user.img }}
+                            {% else %}
+                                ../status/images/icon.png
+                            {% endif %}"
+                             alt="">
+                        <a href="">{{ comm.user.uname }}</a>
                         <span class="comment_show">{{ comm.text }}</span>
                         <span>({{ comm.time }}  第{{ i }}楼)</span>
                         <a href="" class="first_a">举报</a>
@@ -164,11 +170,5 @@
         </div>
     </div>
     <div id="bottom"></div>
-
-
-
-
-
-
 </body>
 </html>
