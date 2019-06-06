@@ -327,11 +327,11 @@ def index_server():
     tags = request.args['tags']
     blogs = Blog.query.filter(Blog.tags==tags, Blog.status==True).all()
     blist = []
-    print(blogs)
     for blog in blogs:
         user = User.query.filter_by(id=blog.user_id).first()
         blog_dic = blog.to_dic()
         blog_dic['uname'] = user.uname
+        blog_dic['content'] = blog.content[0:100]+'. . .'
         blist.append(blog_dic)
     return json.dumps(blist)
 
@@ -400,9 +400,15 @@ def write_blog():
 
 
 # 博客管理
-@app.route("/manage_blog", methods=['GET', 'POST'])
+@app.route("/manage_blog")
 def manager_blog():
-    return render_template("blog_manage.html")
+    if 'uname' not in session:
+    #     return "<script>alert('请先登录');location.href='/regist'</script>"
+    # else:
+    #     uname = session['uname']
+    #     user = User.query.filter_by(uname=uname).first()
+    #     blogs = Blog.query.filter_by(id=user.b)
+        return render_template("blog_manage.html")
 
 
 # 关于论坛
@@ -418,5 +424,4 @@ def protocol():
 
 
 if __name__ == '__main__':
-    # app.run()
     manager.run()
