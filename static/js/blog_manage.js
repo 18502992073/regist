@@ -5,15 +5,83 @@ $(function () {
         $(this).css("color","red");
     });
 
+    // 筛选(默认、按时间、按访问量)标签点击效果
+    // 1.默认标签点击效果
+    $("#filter1").click(function () {
+        $.ajax({
+            url:"/blog_manage_server1",
+            type:"get",
+            async:true,
+            dataType:'jsonp',
+            success:function (data) {
+                var html='';
+                for(var i=data.length-1;i>=0;i--){
+                    html += '<div class="list">';
+                    html += '<div class="delete">删除</div>';
+                    html += '<h4><a href="/blog">'+data[i].title+'</a></h4>';
+                    html += '<p>'+data[i].content+'</p><div>"';
+                    html += '<span style="color: #222;">'+data[i].time+'</span>';
+                    html += '&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #222;">评论数</span>';
+                    html += '<span style="color: #33A6EF;">'+data[i].comment_num+'</span>&nbsp;';
+                    html += '<span style="color: #222;">|</span>&nbsp';
+                    html += '<span style="color: #222;">点赞数</span><span style="color: #33A6EF;">2264</span>';
+                    html += '</div></div>';
+                }
+            }
+        })
+    });
+    // 2.按时间标签点击效果
+    $("#filter2").click(function () {
+        $.ajax({
+            url:"/blog_manage_server1",
+            type:"get",
+            async:true,
+            dataType:'jsonp',
+            success:function (data) {
+                var html='';
+                for(var i=1;i<data.length;i++){
+                    html += '<div class="list">';
+                    html += '<div class="delete">删除</div>';
+                    html += '<h4><a href="/blog">'+data[i].title+'</a></h4>';
+                    html += '<p>'+data[i].content+'</p><div>"';
+                    html += '<span style="color: #222;">'+data[i].time+'</span>';
+                    html += '&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #222;">评论数</span>';
+                    html += '<span style="color: #33A6EF;">'+data[i].comment_num+'</span>&nbsp;';
+                    html += '<span style="color: #222;">|</span>&nbsp';
+                    html += '<span style="color: #222;">点赞数</span><span style="color: #33A6EF;">2264</span>';
+                    html += '</div></div>';
+                }
+            }
+        })
+    });
+
+
     // 移除操作
     $(".delete").click(function () {
-        $(this).parent("div").remove()
+        var res=confirm("确定要删除吗？");
+        if (res){
+            $(this).parent("div").remove();
+            $.ajax({
+                url:"/blog_manage_delete",
+                data:"title="+$(this).next("h4").children("a").html(),
+                type:"get",
+                async:true,
+                success:function (data) {
+                    if (data==="1"){
+                        alert("删除成功");
+                        window.location.reload();
+                    }else {
+                        alert("删除失败");
+                    }
+                }
+            })
+        }
     });
 
     // 轮播图
    // 保存图片路径
-   var baseUrl = "../static/images/blog_manage/";
-   var arr = ["index_banner1.jpg","index_banner2.jpg","index_banner3.jpg","index_banner4.jpg", "index_banner5.jpg"];
+   var baseUrl = "../static/images/";
+   var arr = ["banner1.jpg","banner2.jpg","banner3.jpg","banner4.jpg", "banner5.jpg"];
    var index = 0;
    var timer = setInterval(autoPlay,2000);
    function autoPlay() {

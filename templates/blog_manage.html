@@ -12,38 +12,52 @@
 <!--顶部导航-->
     <div id="nav">
         <div id="top">
-            <div class="topleft">
-                <img class="item" src="../static/images/logo.png">
-                <p class="item">Bother Forum</p >
-            </div>
-            <div class="topcenter">
-                <input type="text" name="search" placeholder="请输入要搜索的内容">
-                <button>搜索</button>
-                <div></div>
-            </div>
-            <div class="topright">
-                <img src="../static/images/message-icon.png" height="24" width="30"/>
-                <p><a href="">消息</a></p>
-                <img src="../static/images/write_blog.png" height="24" width="30"/>
-                <p><a href="">写博客</a></p>
-    <!--            < a href="">登陆</ a>-->
-    <!--            < a href="">注册</ a>-->
-            </div>
-            <ul>
-                <li class="pic">
-                    <div class="img">
-                       <img src="../static/images/icon.png">
-                    </div>
-                    <ol class="list">
-                        <li><a href="">我的关注</a></li>
-                        <li><a href="">我的收藏</a></li>
-                        <li><a href="">个人中心</a></li>
-                        <li><a href="">账号设置</a></li>
-                    </ol>
-                </li>
-            </ul>
-            <a href="/index" id="index">首页</a>
+        <div class="topleft">
+            <img class="item" src="../static/images/456.png">
+            <p class="item">Bother Forum</p>
         </div>
+        <div class="topcenter">
+            <div class="tags">
+                <a href="/">首页</a>
+                <ul>
+                    <a href="" class="type" style="width: 120px;">文章列表</a>
+                    <ol class="type_list">
+                        <li><a href="">基础应用</a></li>
+                        <li><a href="">网络编程</a></li>
+                        <li><a href="">应用开发</a></li>
+                        <li><a href="">人工智能</a></li>
+                    </ol>
+                </ul>
+                <a href="" class="last_a">每日推荐</a>
+            </div>
+        </div>
+        <div class="topright">
+            <img src="../static/images/message-icon.png" height="24" width="30"/>
+            <p><a href="">消息</a></p>
+            <img src="../static/images/write_blog.png" height="24" width="30"/>
+            <p><a href="/write_blog">写博客</a></p>
+            <a href="/login" class="regs">登陆</a>
+            <a href="/regist" class="log">注册</a>
+        </div>
+        <ul>
+            <li class="pic">
+                <div class="img">
+                    {% if params.user.img %}
+                        <a href=""><img src="{{ params.user.img }}" alt=""></a>
+                    {% else %}
+                        <a href=""><img src="../static/images/icon.png" alt=""></a>
+                    {% endif %}
+                </div>
+                <ol class="list">
+                    <li><a href="">我的关注</a></li>
+                    <li><a href="">我的收藏</a></li>
+                    <li><a href="">个人中心</a></li>
+                    <li><a href="/manage_blog">帖子管理</a></li>
+                    <li><a href="/login" id="logout">注销</a></li>
+                </ol>
+            </li>
+        </ul>
+    </div>
     </div>
 <!--标题行-->
     <div id="title">
@@ -54,13 +68,19 @@
         <!--主体左侧-->
         <div id="left">
             <div id="left1">
-                <a href=""><img src="" alt=""></a>
-                <a href="">zhangan</a>
+                <a href=""><img src="
+                {% if params.user.img %}
+                    {{ params.user.img }}
+                {% else %}
+                    ../static/images/icon.png
+                {% endif %}
+                " alt=""></a>
+                <a href="">{{ params.user.uname }}</a>
             </div>
             <div id="left2">
                 <div>
                     <p>原创</p>
-                    <p>0</p>
+                    <p>{{ params.blog_num }}</p>
                 </div>
                 <div>
                     <p>粉丝</p>
@@ -72,11 +92,11 @@
                 </div>
                 <div>
                     <p>评论</p>
-                    <p>0</p>
+                    <p>{{ params.comment_num }}</p>
                 </div>
             </div>
             <div id="banner">
-                <img src="../static/images/blog_manage/index_banner1.jpg" alt="">
+                <img src="../static/images/banner1.jpg" alt="">
                 <ul>
                     <li>1</li>
                     <li>2</li>
@@ -98,45 +118,24 @@
                     <li id="filter3" class="filter">按访问量</li>
                 </ul>
             </div>
+            {% for blog in params.blogs %}
             <div class="list">
                 <div class="delete">删除</div>
-                <h4><a href="">这里是帖子标题</a></h4>
+                <h4><a href="/blog">{{ blog.title }}</a></h4>
+                <p>{{ blog.content[0:80] }}. . .</p>
                 <div>
-                    <span style="color: #222;">2019年5月20日</span>
+                    <span style="color: #222;">{{ blog.time }}</span>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <span style="color: #222;">评论数</span>
-                    <span style="color: #33A6EF;">2140</span>
+                    <span style="color: #33A6EF;">
+                        0
+                    </span>
                     &nbsp;<span style="color: #222;">|</span>&nbsp;
                     <span style="color: #222;">点赞数</span>
                     <span style="color: #33A6EF;">2264</span>
                 </div>
             </div>
-            <div class="list">
-                <div class="delete">删除</div>
-                <h4><a href="">这里是帖子de 标题</a></h4>
-                <div>
-                    <span style="color: #222;">2019年5月20日</span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <span style="color: #222;">评论数</span>
-                    <span style="color: #33A6EF;">2140</span>
-                    &nbsp;<span style="color: #222;">|</span>&nbsp;
-                    <span style="color: #222;">点赞数</span>
-                    <span style="color: #33A6EF;">2264</span>
-                </div>
-            </div>
-            <div class="list">
-                <div class="delete">删除</div>
-                <h4><a href="">这里是帖子标题</a></h4>
-                <div>
-                    <span style="color: #222;">2019年5月20日</span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <span style="color: #222;">评论数</span>
-                    <span style="color: #33A6EF;">2140</span>
-                    &nbsp;<span style="color: #222;">|</span>&nbsp;
-                    <span style="color: #222;">点赞数</span>
-                    <span style="color: #33A6EF;">2264</span>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 <!--底部页脚-->

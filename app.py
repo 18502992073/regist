@@ -196,7 +196,6 @@ def do_log():
         # 根据用户名查找数据库数据
         user = db.session.query(User).filter(
             or_(User.uname == uname, User.phone == uname)).first()
-        print(user)
         # 判断对象是否存在,密码是否正确
         if user and user.pwd == pwd:
             # 保存uname到session中
@@ -217,6 +216,11 @@ def do_log():
             return render_template("login.html", params=True)
 
 
+@app.route('/logout')
+def logout():
+    session.pop("uname")
+    return redirect("/login")
+
 # 重置密码
 @app.route("/reset_pwd", methods=["GET", "POST"])
 def do_reset():
@@ -224,7 +228,7 @@ def do_reset():
     if request.method == "GET":
         # 如果已有用户处于登录状态,则返回主页
         if "uname" in session:
-            return render_template("view.html")
+            return render_template("index.html")
         # 如果带有"reset_result"参数则说明上次的重置密码请求出错
         if "reset_result" in request.args:
             print("重试")
@@ -271,14 +275,17 @@ def do_reset():
             # 删除之前可能存下来的cookie
             if phone in request.cookies:
                 resp = make_response(
-                    "<script>alert('验证码错误,请重新确认');location.href='/reset_pwd?reset_result=False'</script>")
+                    "<script>alert('验证码错误,请重新确认');location.href='/"
+                    "reset_pwd?reset_result=False'</script>")
                 resp.delete_cookie("phone")
-            return "<script>alert('重置密码成功,请重新登录');location.href='/login'</script>"
+            return "<script>alert('重置密码成功,请重新登录');location.href='/" \
+                   "login'</script>"
         # 如果验证码不正确
         elif code != get_code:
             # 设置响应对象
             resp = make_response(
-                "<script>alert('验证码错误,请重新确认');location.href='/reset_pwd?reset_result=False'</script>")
+                "<script>alert('验证码错误,请重新确认');location.href='/"
+                "reset_pwd?reset_result=False'</script>")
             # 设置phone作为临时cookie以便后续作为输入框初始值使用
             resp.set_cookie("phone", phone, max_age=60)
             # 如果用户不存在则设置cookie为空
@@ -319,13 +326,16 @@ def index():
             return render_template("index.html", params=locals())
     else:
         # 否则返回未登录页面
-        return render_template("index.html", params=locals())
+        return render_template("login.html", params=locals())
 
 
 @app.route("/index-server")
 def index_server():
     tags = request.args['tags']
-    blogs = Blog.query.filter(Blog.tags==tags, Blog.status==True).all()
+    if tags == "推荐":
+        blogs = Blog.query.filter(Blog.status == True).all()
+    else:
+        blogs = Blog.query.filter(Blog.tags==tags, Blog.status==True).all()
     blist = []
     for blog in blogs:
         user = User.query.filter_by(id=blog.user_id).first()
@@ -344,42 +354,47 @@ def get_blog():
     # 根据帖子标题查找相应的对象
     blog = Blog.query.filter(Blog.title==title, Blog.status==True).first()
     # 提取页面中要是显示的楼主信息
-    uid = blog.user_id
-    user = User.query.filter_by(id=uid).first()
+    user = User.query.filter_by(id=blog.user_id).first()
+    myname = session['uname']
+    my = User.query.filter_by(uname=myname).first()
     blog_num = 0
     for i in user.blogs:
         blog_num += 1
     comment_num = 0
     for i in user.comments:
         comment_num += 1
-    # if request.method == 'POST':
-    #     comment = Comment()
-    #     comment.user_id = uname.id
-    #     comment.text = request.form['comment']
-    #     comment.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
-    #     comment.blog_id = blog.id
-    # # 提取页面中要是显示的帖子信息
-    # blog_num = User.query.filter(User.uname==uname).all().length()
-    # comments = Comment.query.filter(Comment.blog_id == blog.id,
-    #                                 Comment.status == True).all()
-    # comment_num = comments.length()
-    # time = blog.time
-    # tags = blog.tags
-    # content = blog.content
     return render_template("blog.html", params=locals())
+
+
+@app.route("/comment", methods=['POST'])
+def comment():
+    comment = Comment()
+    comment.text = request.form['comment']
+    comment.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+    comment.blog_id = request.form['blog-id']
+    comment.user_id = request.form['uid']
+    try:
+        db.session.add(comment)
+        return "<script>alert('评论成功');location.href('/blog)</script>"
+    except Exception:
+        return "<script>alert('评论失败')</script>"
 
 
 # 编写微博
 @app.route("/write_blog", methods=['GET', 'POST'])
 def write_blog():
+    # get方法获取页面数据，post方法提交发表内容
     if request.method == 'GET':
         # 判断用户是否登录,是则提取页面信息,否跳转登录
         if 'uname' in session:
             uname = session['uname']
             user = User.query.filter_by(uname=uname).first()
-            img = user.img
-            blogs = user.blogs
-            comments = user.comments
+            blog_num = 0
+            for i in user.blogs:
+                blog_num += 1
+            comment_num = 0
+            for i in user.comments:
+                comment_num += 1
             return render_template("write.html", params=locals())
         else:
             return redirect('/login')
@@ -403,12 +418,71 @@ def write_blog():
 @app.route("/manage_blog")
 def manager_blog():
     if 'uname' not in session:
-    #     return "<script>alert('请先登录');location.href='/regist'</script>"
-    # else:
-    #     uname = session['uname']
-    #     user = User.query.filter_by(uname=uname).first()
-    #     blogs = Blog.query.filter_by(id=user.b)
-        return render_template("blog_manage.html")
+        return "<script>alert('请先登录');location.href='/login'</script>"
+    else:
+        uname = session['uname']
+        user = User.query.filter_by(uname=uname).first()
+        blogs = Blog.query.filter(Blog.user_id == user.id, Blog.status == True
+                                  ).all()
+        blog_num = 0
+        for i in user.blogs:
+            blog_num += 1
+        comment_num = 0
+        for j in user.comments:
+            comment_num += 1
+    return render_template("blog_manage.html", params=locals())
+
+
+
+@app.route('/blog_manage_server1')
+def blog_manage_server1():
+    uname = session['uname']
+    user = User.query.filter_by(uname=uname).first()
+    blogs = Blog.query.filter(Blog.user_id == user.id, Blog.status == True).all()
+    blist = []
+    for blog in blogs:
+        comments = blog.comments
+        comment_num = 0
+        for comment in comments:
+            comment_num += 1
+        blog_dic = blog.to_dic()
+        blog_dic['comment_num'] = comment_num
+        blog_dic['content'] = blog.content[0:120] + '. . .'
+        blist.append(blog_dic)
+    return json.dumps(blist)
+
+
+@app.route('/blog_manage_delete')
+def delete_blog():
+    title = request.args['title']
+    uname = session['uname']
+    print(uname)
+    user = User.query.filter_by(uname=uname).first()
+    print(user.id)
+    blog = Blog.query.filter(Blog.title == title, Blog.user_id == user.id
+                             ).first()
+    print(blog)
+    try:
+        blog.status = False
+        db.session.add(blog)
+        return "1"
+    except Exception:
+        return "0"
+
+
+@app.route('/search')
+def search():
+    keywords = request.args['keywords']
+    blogs = Blog.query.filter(or_(Blog.title.like('%'+keywords+'%'),
+                                  Blog.content.like('%'+keywords+'%'))).all()
+    blist = []
+    for blog in blogs:
+        user = User.query.filter_by(id=blog.user_id).first()
+        blog_dic = blog.to_dic()
+        blog_dic['uname'] = user.uname
+        blog_dic['content'] = blog.content[0:100] + '. . .'
+        blist.append(blog_dic)
+    return json.dumps(blist)
 
 
 # 关于论坛

@@ -12,17 +12,10 @@
 <body>
     <div id="top">
         <div class="topleft">
-            {% if params.user.img %}
-                <img class="item" src="{{ params.user.img }}">
-            {% else %}
-                <img class="item" src="../static/images/456.png">
-            {% endif %}
+            <img class="item" src="../static/images/456.png">
             <p class="item">Bother Forum</p>
         </div>
         <div class="topcenter">
-            <input type="text" name="search" placeholder="请输入要搜索的内容">
-            <button>搜索</button>
-            <div class="circle"></div>
             <div class="tags">
                 <a href="/">首页</a>
                 <ul>
@@ -48,7 +41,11 @@
         <ul>
             <li class="pic">
                 <div class="img">
-                   <img src="../static/images/1.png">
+                    {% if params.my.img %}
+                        <a href=""><img src="{{ params.my.img }}" alt=""></a>
+                    {% else %}
+                        <a href=""><img src="../static/images/icon.png" alt=""></a>
+                    {% endif %}
                 </div>
                 <ol class="list">
                     <li><a href="">我的关注</a></li>
@@ -63,13 +60,25 @@
         <div class="middleleft">
             <div class="personal">
                 <div class="up">
-                    <a href=""><img class="blogerimg" src="../static/images/1.png" alt=""></a>
+                    <a href=""><img class="blogerimg" src="
+                        {% if params.user.img %}
+                            {{ params.user.img }}
+                        {% else %}
+                            ../static/images/1.png
+                        {% endif %}
+                    " alt=""></a>
                     <p class="user_name">{{ params.user.uname }}</p>
                 </div>
                 <div class="bottom">
                     <div class="item">
                         <p>原创</p>
-                        <p class="num1">{{ params.blog_num }}</p>
+                        <p class="num1">
+                            {% if params.blog_num %}
+                                {{ params.blog_num }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </p>
                     </div>
                     <div class="item">
                         <p>粉丝</p>
@@ -81,7 +90,13 @@
                     </div>
                     <div class="item no_top">
                         <p>评论</p>
-                        <p  class="num4">{{ params.comment_num }}</p>
+                        <p  class="num4">
+                            {% if params.comment_num %}
+                                {{ params.comment_num }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -119,32 +134,38 @@
             </div>
             <div class="comment">
                 <div class="img">
-                    <img src="../static/images/1.png" alt="">
+                    <a href=""><img src="
+                        {% if params.my.img %}
+                            {{ params.my.img }}
+                        {% else %}
+                            ../static/images/icon.png
+                        {% endif %}
+                    "></a>
                 </div>
-                <form action="/blog" method="post" enctype="application/x-www-form-urlencoded">
+                <form action="/comment" method="post" enctype="application/x-www-form-urlencoded">
                     <textarea type="txt" name="comment" placeholder="想对作者说点什么?" class="comment_text" maxlength="800"></textarea>>
                     <label class="word_last">还可以输入<span>800</span>个文字</label>
                     <input class="kown" type="radio" name="comment_type" value="kown" id="kown" checked><label for="kown">公开评论</label>
                     <input class="unkown" type="radio" name="comment_type" value="unkown" id="unkown"><label for="unkown">匿名评论</label>
+                    <input type="hidden" name="blog-id" value="{{ params.blog.id }}">
+                    <input type="hidden" name="uid" value="{{ params.user.id }}">
                     <button>发表评论</button>
                 </form>
                 {% for comm in params.blog.comments %}
-                    i = 1
                     <div class="comment_contant">
                         <img src="
-                            {% if comm.user.img %}
-                                {{ comm.user.img }}
+                            {% if params.user.img %}
+                                {{ params.user.img }}
                             {% else %}
-                                ../status/images/icon.png
+                                ../static/images/icon.png
                             {% endif %}"
                              alt="">
-                        <a href="">{{ comm.user.uname }}</a>
+                        <a href="">{{ params.user.uname }}</a>
                         <span class="comment_show">{{ comm.text }}</span>
-                        <span>({{ comm.time }}  第{{ i }}楼)</span>
+                        <span>({{ comm.time }})</span>
                         <a href="" class="first_a">举报</a>
                         <a href="">回复</a>
                     </div>
-                    i += 1
                 {% endfor %}
             </div>
         </div>

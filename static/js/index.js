@@ -1,9 +1,57 @@
 /**
  * Created by tarena on 19-6-1.
  */
+    // 搜索框功能
+    function search(){
+        $.ajax({
+            url:"/search",
+            type:"get",
+            data:"keywords="+$("[name=search]").val(),
+            async:true,
+            dataType:"json",
+            success:function (data) {
+                if (data.length){
+                    alert("共搜到"+data.length+"条相关信息");
+                    var html="";
+                    for(var i=data.length-1;i>=0;i--){
+                        html += '<div class="list">';
+                        html += '<h4><a href="/blog?blog_title='+data[i].title+'">'+data[i].title+'</a></h4>';
+                        html += '<p class="show-text">'+data[i].content+'</p>'+
+                            '<span style="color: #33A6EF;">'+data[i].uname+'</span><div>' +
+                            '<span style="color: #222;">'+data[i].time+'</span>&nbsp;&nbsp;&nbsp;&nbsp;'+
+                            '<span style="color: #222;">评论数</span>' +
+                            '<span style="color: #33A6EF;">'+data[i].comments_num+'</span>&nbsp;' +
+                            '<span style="color: #222;">|</span>&nbsp;' +
+                            '<span style="color: #222;">点赞数</span>' +
+                            '<span style="color: #33A6EF;">'+data[i].great_num+'</span></div></div>'
+                    }
+                    $("#view").html(html);
+                }else {
+                    alert("未搜到结果，换个词语试试");
+                    window.location.reload();
+                }
+            }
+        });
+    };
+
 $(function () {
-    // 导航标签点击获取对应内容
+    // 点击首页刷新页面
+    $("#index").click(function () {
+        window.location.reload()
+    });
+    // 注销
+    $("#logout").click(function () {
+        $.ajax({
+            url:"/logout",
+            type:"get",
+            async:true,
+        })
+    });
+
+    // 导航标签点击后改变选中效果并获取对应内容
     $(".nav").click(function () {
+        $(".nav").css("background", "#04b5eb");
+        $(this).css("background", "#8ce141");
         $.ajax({
             url:"/index-server",
             type:"get",
@@ -28,8 +76,7 @@ $(function () {
             }
         });
 
-    })
-
+    });
 
     // 轮播图
    // 保存图片路径

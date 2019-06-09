@@ -2,7 +2,7 @@
     看帖内部的页面动态效果
 */
 //页面加载完成后执行函数
-$(document).ready(function(){
+$(function(){
     //3.轮播图
     //保存图片路径
     var baseUrl="../static/images/";
@@ -81,37 +81,42 @@ $(document).ready(function(){
             //更改之后索引颜色
             $("#banner li:gt("+index+")").css("background","#999");
             });
-    };
+    }
+
     // 评论框获取焦点显示提交
     $(".comment .comment_text").focus(function () {
-        console.log("获取焦点")
-        $(this).css("height","120px")
+        console.log("获取焦点");
+        $(this).css("height","120px");
         $(this).parent().children().css("display","inline-block")
-    })
-    // 平路框失去焦点影藏，若框内有文字则不隐藏
+    });
+
+    // 评论框失去焦点影藏，若框内有文字则不隐藏
     $(".comment .comment_text").blur(function (){
-        console.log("失去焦点")
+        console.log("失去焦点");
         if($(this).val()==""){
-            $(this).css("height","20px")
-            $(this).parent().children().css("display","none")
-            $(this).css("display","inline-block")
+            $(this).css("height","20px");
+            $(this).parent().children().css("display","none");
+            $(this).css("display","inline-block");
         }
     });
+
     // 显示还剩下多少字符可输入
-    var word_count=800
+    var word_count=800;
     $(".comment .comment_text").bind("input propertychange",function(){
-        var write=$(this).val().length
-        var write_last=word_count-write
-        console.log(write_last)
+        var write=$(this).val().length;
+        var write_last=word_count-write;
+        console.log(write_last);
         if (write_last<=0){
-            $(this).siblings("label").children().text(0)
+            $(this).siblings("label").children().text(0);
         }else{
-            $(this).siblings("label").children().text(write_last)
+            $(this).siblings("label").children().text(write_last);
         }
     });
 
+    // 评论
+    $("#submit-comment").click(function () {
 
-
+    })
 
 
 
