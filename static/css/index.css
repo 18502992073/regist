@@ -217,7 +217,7 @@ body{
 }
 /*主体区域*/
 #main{
-    width: 1320px;
+    width: 1500px;
     overflow: hidden;
     margin: 10px auto;
 }
@@ -357,19 +357,23 @@ body{
 /*主体右侧*/
 #main-right{
     float: right;
-    width: 300px;
-    height: 200px;
+    width: 480px;
+    /*height: 200px;*/
     margin-top: 50px;
 }
-#main-right p{
-    height: 40px;
-    width: 100px;
-    background: #23c6c7;
-    border-radius: 8px;
+#main-right img{
+    width: 480px;
+    margin-bottom: 10px;
 }
+/*#main-right p{*/
+    /*height: 40px;*/
+    /*width: 100px;*/
+    /*background: #23c6c7;*/
+    /*border-radius: 8px;*/
+/*}*/
 #cloud {
     background: #fff;
-    margin-top: 30px;
+    margin-top: 20px;
     margin-bottom: 20px;
     border-bottom: 1px solid #000;
 }

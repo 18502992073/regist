@@ -221,6 +221,7 @@ def logout():
     session.pop("uname")
     return redirect("/login")
 
+
 # 重置密码
 @app.route("/reset_pwd", methods=["GET", "POST"])
 def do_reset():
@@ -350,9 +351,10 @@ def index_server():
 @app.route("/blog")
 def get_blog():
     # 获取帖子标题
-    title = request.args['blog_title']
+    id = request.args['blog_id']
     # 根据帖子标题查找相应的对象
-    blog = Blog.query.filter(Blog.title==title, Blog.status==True).first()
+    blog = Blog.query.filter(Blog.id==id, Blog.status==True).first()
+    content = re.findall(r'.*', blog.content)
     # 提取页面中要是显示的楼主信息
     user = User.query.filter_by(id=blog.user_id).first()
     myname = session['uname']
@@ -375,7 +377,7 @@ def comment():
     comment.user_id = request.form['uid']
     try:
         db.session.add(comment)
-        return "<script>alert('评论成功');location.href('/blog)</script>"
+        return "<script>alert('评论成功');location.href('/blog?blog_title=python基础')</script>"
     except Exception:
         return "<script>alert('评论失败')</script>"
 
@@ -405,6 +407,7 @@ def write_blog():
         blog.title = request.form['title']
         blog.tags = request.form['type']
         blog.content = request.form['content']
+        print(request.form['content'])
         blog.user_id = user.id
         blog.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
         try:
@@ -482,6 +485,7 @@ def search():
         blog_dic['uname'] = user.uname
         blog_dic['content'] = blog.content[0:100] + '. . .'
         blist.append(blog_dic)
+        print(blog.id)
     return json.dumps(blist)
 
 

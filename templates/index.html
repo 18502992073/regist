@@ -93,9 +93,9 @@
             <div id="view">
                 {% for blog in params.blogs %}
                 <div class="list">
-                    <h4><a href="/blog?blog_title={{ blog.title }}">{{ blog.title }}</a></h4>
+                    <h4><a href="/blog?blog_id={{ blog.id }}">{{ blog.title }}</a></h4>
                     <p class="show-text">
-                        显示帖子内容{{ blog.content |truncate(100) }}
+                        {{ blog.content |truncate(100) }}
                     </p>
                     <span>{{ blog.user.uname }}</span>
                     <div>
@@ -103,8 +103,8 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;
                         <span style="color: #222;">评论数</span>
                         <span style="color: #33A6EF;">
-                            {% if blog.comments.length %}
-                                {{ blog.comments.length }}
+                            {% if blog.comments.all() %}
+                                {{ blog.comments.all()|length }}
                             {% else %}
                                 0
                             {% endif %}

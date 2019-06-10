@@ -121,8 +121,8 @@
             {% for blog in params.blogs %}
             <div class="list">
                 <div class="delete">删除</div>
-                <h4><a href="/blog">{{ blog.title }}</a></h4>
-                <p>{{ blog.content[0:80] }}. . .</p>
+                <h4><a href="/blog?blog_id={{ blog.id }}">{{ blog.title }}</a></h4>
+                <p>{{ blog.content|truncate(80) }}</p>
                 <div>
                     <span style="color: #222;">{{ blog.time }}</span>
                     &nbsp;&nbsp;&nbsp;&nbsp;

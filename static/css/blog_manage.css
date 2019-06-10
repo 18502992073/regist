@@ -1,5 +1,5 @@
 /*清除默认样式*/
-body,h1,h2,h3,h4,h5,h6,ul,a{
+body,h1,h2,h3,h4,h5,h6,ul,ol,a{
     margin: 0;
     padding: 0;
     list-style: none;
@@ -7,19 +7,18 @@ body,h1,h2,h3,h4,h5,h6,ul,a{
 }
 body{
     background:#e9c9bf;
-    padding:0px;
 }
 /*1 头部样式*/
 #top{
     width:1500px;
     height:50px;
     background:#FFFFFF;
-    margin:0 auto;
+    /*margin:0 auto;*/
     /*position:relative;*/
     font-size:12px;
     position:fixed;
     left:50%;
-    top:0px;
+    top:0;
     margin-left:-750px;
     z-index: 100;
 }

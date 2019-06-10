@@ -15,7 +15,7 @@
                     var html="";
                     for(var i=data.length-1;i>=0;i--){
                         html += '<div class="list">';
-                        html += '<h4><a href="/blog?blog_title='+data[i].title+'">'+data[i].title+'</a></h4>';
+                        html += '<h4><a href="/blog?blog_id='+data[i].id+'">'+data[i].title+'</a></h4>';
                         html += '<p class="show-text">'+data[i].content+'</p>'+
                             '<span style="color: #33A6EF;">'+data[i].uname+'</span><div>' +
                             '<span style="color: #222;">'+data[i].time+'</span>&nbsp;&nbsp;&nbsp;&nbsp;'+
