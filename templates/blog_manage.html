@@ -59,10 +59,6 @@
         </ul>
     </div>
     </div>
-<!--标题行-->
-    <div id="title">
-        <h2>我的博客</h2>
-    </div>
 <!--主体-->
     <div id="main">
         <!--主体左侧-->
@@ -80,7 +76,7 @@
             <div id="left2">
                 <div>
                     <p>原创</p>
-                    <p>{{ params.blog_num }}</p>
+                    <p>{{ params.user.blogs.all()|length|default(0) }}</p>
                 </div>
                 <div>
                     <p>粉丝</p>
@@ -92,7 +88,7 @@
                 </div>
                 <div>
                     <p>评论</p>
-                    <p>{{ params.comment_num }}</p>
+                    <p>{{ params.user.comments.all()|length|default(0) }}</p>
                 </div>
             </div>
             <div id="banner">
@@ -118,24 +114,26 @@
                     <li id="filter3" class="filter">按访问量</li>
                 </ul>
             </div>
-            {% for blog in params.blogs %}
-            <div class="list">
-                <div class="delete">删除</div>
-                <h4><a href="/blog?blog_id={{ blog.id }}">{{ blog.title }}</a></h4>
-                <p>{{ blog.content|truncate(80) }}</p>
-                <div>
-                    <span style="color: #222;">{{ blog.time }}</span>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    <span style="color: #222;">评论数</span>
-                    <span style="color: #33A6EF;">
-                        0
-                    </span>
-                    &nbsp;<span style="color: #222;">|</span>&nbsp;
-                    <span style="color: #222;">点赞数</span>
-                    <span style="color: #33A6EF;">2264</span>
+            <div id="right-bottom">
+                {% for blog in params.blogs %}
+                <div class="list">
+                    <div class="delete">删除</div>
+                    <h4><a href="/blog?blog_id={{ blog.id }}">{{ blog.title }}</a></h4>
+                    <p>{{ blog.content|truncate(80) }}</p>
+                    <div>
+                        <span style="color: #222;">{{ blog.time }}</span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="color: #222;">评论数</span>
+                        <span style="color: #33A6EF;">
+                            {{ blog.comments.all()|length|default(0) }}
+                        </span>
+                        &nbsp;<span style="color: #222;">|</span>&nbsp;
+                        <span style="color: #222;">点赞数</span>
+                        <span style="color: #33A6EF;">2264</span>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
 <!--底部页脚-->

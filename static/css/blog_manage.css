@@ -148,7 +148,7 @@ body{
     float:left;
 }
 .topright p,.topright a{
-    line-height:50px;
+    /*line-height:50px;*/
     padding:0px 5px;
 }
 .topright a{
@@ -178,22 +178,11 @@ body{
 .topright .regs{
     margin-left:20px;
 }
-/*顶部标题行*/
-#title{
-    background: #dd8b84;
-    height: 100px;
-    width: 1600px;
-    margin: 0 auto;
-}
-#title h2{
-    margin-left: 150px;
-    height: 100px;
-    line-height: 100px;
-}
+
 /*主体*/
 #main{
-    width: 1300px;
-    margin: 10px auto;
+    width: 1500px;
+    margin: 60px auto 10px;
     background: #179999;
     overflow: hidden;
 }
@@ -294,8 +283,7 @@ body{
 /*主体右侧*/
 #right{
     float: right;
-    width: 890px;
-    height: 800px;
+    width: 1090px;
     background: #26A69A;
 }
 /*右侧顶部*/
@@ -318,8 +306,12 @@ body{
     color: red;
 }
 /*右侧显示区*/
+#right-bottom{
+    float: right;
+    width: 1090px;
+}
 #right .list{
-    width: 870px;
+    width: 1070px;
     height: 150px;
     background: darkorange;
     margin: 10px;
@@ -353,6 +345,7 @@ body{
 }
 #right .list>p{
     margin: 10px;
+    font-size: 16px;
 }
 #right .list>div:last-child{
     position: absolute;

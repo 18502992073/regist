@@ -74,11 +74,7 @@
                     <div class="item">
                         <p>原创</p>
                         <p class="num1">
-                            {% if params.blog_num %}
-                                {{ params.blog_num }}
-                            {% else %}
-                                0
-                            {% endif %}
+                            {{ params.user.blogs.all()|length|default(0) }}
                         </p>
                     </div>
                     <div class="item">
@@ -92,11 +88,12 @@
                     <div class="item no_top">
                         <p>评论</p>
                         <p  class="num4">
-                            {% if params.comment_num %}
-                                {{ params.comment_num }}
-                            {% else %}
-                                0
-                            {% endif %}
+                            {{ params.user.comments.all()|length|default(0) }}
+{#                            {% if params.comment_num %}#}
+{#                                {{ params.comment_num }}#}
+{#                            {% else %}#}
+{#                                0#}
+{#                            {% endif %}#}
                         </p>
                     </div>
                 </div>
@@ -163,7 +160,7 @@
                              alt="">
                         <a href="">{{ params.user.uname }}</a>
                         <span class="comment_show">{{ comm.text }}</span>
-                        <span>({{ comm.time }}第{{ loop.index }}楼)</span>
+                        <span>({{ comm.time }} {{ loop.index }}楼)</span>
                         <a href="" class="first_a">举报</a>
                         <a href="">回复</a>
                     </div>

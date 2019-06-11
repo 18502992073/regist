@@ -12,14 +12,15 @@ $(function () {
             url:"/blog_manage_server1",
             type:"get",
             async:true,
-            dataType:'jsonp',
+            dataType:'json',
             success:function (data) {
                 var html='';
-                for(var i=data.length-1;i>=0;i--){
+                for(var i=0;i<data.length;i++){
+                    console.log(i,data[i])
                     html += '<div class="list">';
                     html += '<div class="delete">删除</div>';
                     html += '<h4><a href="/blog">'+data[i].title+'</a></h4>';
-                    html += '<p>'+data[i].content+'</p><div>"';
+                    html += '<p>'+data[i].content+'</p><div>';
                     html += '<span style="color: #222;">'+data[i].time+'</span>';
                     html += '&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #222;">评论数</span>';
                     html += '<span style="color: #33A6EF;">'+data[i].comment_num+'</span>&nbsp;';
@@ -27,6 +28,7 @@ $(function () {
                     html += '<span style="color: #222;">点赞数</span><span style="color: #33A6EF;">2264</span>';
                     html += '</div></div>';
                 }
+                $("#right-bottom").html(html);
             }
         })
     });
@@ -36,14 +38,15 @@ $(function () {
             url:"/blog_manage_server1",
             type:"get",
             async:true,
-            dataType:'jsonp',
+            dataType:'json',
             success:function (data) {
                 var html='';
-                for(var i=1;i<data.length;i++){
+                for(var i=data.length-1;i>=0;i--){
+                    console.log(i,data[i])
                     html += '<div class="list">';
                     html += '<div class="delete">删除</div>';
                     html += '<h4><a href="/blog">'+data[i].title+'</a></h4>';
-                    html += '<p>'+data[i].content+'</p><div>"';
+                    html += '<p>'+data[i].content+'</p><div>';
                     html += '<span style="color: #222;">'+data[i].time+'</span>';
                     html += '&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #222;">评论数</span>';
                     html += '<span style="color: #33A6EF;">'+data[i].comment_num+'</span>&nbsp;';
@@ -51,6 +54,7 @@ $(function () {
                     html += '<span style="color: #222;">点赞数</span><span style="color: #33A6EF;">2264</span>';
                     html += '</div></div>';
                 }
+                $("#right-bottom").html(html);
             }
         })
     });

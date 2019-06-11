@@ -42,22 +42,6 @@ body{
     color:mediumpurple;
     font-weight: bold;
 }
-/*1.2 搜索框*/
-#top .topcenter{
-    float: left;
-    margin-left: 350px;
-    position:relative;
-}
-.topcenter .tags{
-    height:50px;
-    width:300px;
-    line-height: 50px;
-    text-align: center;
-    text-decoration: none;
-    float: right;
-    padding-left:20px;
-    position:relative;
-}
 .topcenter .tags>a,.topcenter .tags>ul>a{
     font-size: 18px;
 
@@ -67,9 +51,6 @@ body{
 .topcenter .tags>a{
     margin: 0 35px;
 }
-
-
-
 .type .type_list{
     float: right;
     position:absolute;

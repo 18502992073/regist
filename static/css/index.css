@@ -376,6 +376,7 @@ body{
     margin-top: 20px;
     margin-bottom: 20px;
     border-bottom: 1px solid #000;
+    padding-left: 10px;
 }
 #cloud ul {
     font-size: 14px

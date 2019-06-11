@@ -304,6 +304,7 @@ def do_reset():
 @app.route("/index")
 def index():
     blogs = Blog.query.filter(Blog.status == True).all()
+    blogs.reverse()
     # 如果当前浏览器有用户是已登录状态
     if "uname" in session:
         # 获取session中的用户名
@@ -359,12 +360,6 @@ def get_blog():
     user = User.query.filter_by(id=blog.user_id).first()
     myname = session['uname']
     my = User.query.filter_by(uname=myname).first()
-    blog_num = 0
-    for i in user.blogs:
-        blog_num += 1
-    comment_num = 0
-    for i in user.comments:
-        comment_num += 1
     return render_template("blog.html", params=locals())
 
 
@@ -391,12 +386,12 @@ def write_blog():
         if 'uname' in session:
             uname = session['uname']
             user = User.query.filter_by(uname=uname).first()
-            blog_num = 0
-            for i in user.blogs:
-                blog_num += 1
-            comment_num = 0
-            for i in user.comments:
-                comment_num += 1
+            # blog_num = 0
+            # for i in user.blogs:
+            #     blog_num += 1
+            # comment_num = 0
+            # for i in user.comments:
+            #     comment_num += 1
             return render_template("write.html", params=locals())
         else:
             return redirect('/login')
@@ -412,7 +407,7 @@ def write_blog():
         blog.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
         try:
             db.session.add(blog)
-            return "<script>alert('发表成功');location.href='/manage_blog'</script>"
+            return "<script>alert('发表成功');window.location.href='/manage_blog'</script>"
         except Exception:
             return "<script>alert('发表失败')</script>"
 
@@ -425,16 +420,9 @@ def manager_blog():
     else:
         uname = session['uname']
         user = User.query.filter_by(uname=uname).first()
-        blogs = Blog.query.filter(Blog.user_id == user.id, Blog.status == True
-                                  ).all()
+        blogs = Blog.query.filter(Blog.user_id == user.id, Blog.status == True).all()
         blog_num = 0
-        for i in user.blogs:
-            blog_num += 1
-        comment_num = 0
-        for j in user.comments:
-            comment_num += 1
     return render_template("blog_manage.html", params=locals())
-
 
 
 @app.route('/blog_manage_server1')
