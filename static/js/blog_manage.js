@@ -42,7 +42,6 @@ $(function () {
             success:function (data) {
                 var html='';
                 for(var i=data.length-1;i>=0;i--){
-                    console.log(i,data[i])
                     html += '<div class="list">';
                     html += '<div class="delete">删除</div>';
                     html += '<h4><a href="/blog">'+data[i].title+'</a></h4>';

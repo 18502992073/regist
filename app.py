@@ -38,10 +38,35 @@ class User(db.Model):
     uname = db.Column(db.String(32), unique=True, nullable=False)
     pwd = db.Column(db.String(32), nullable=False)
     phone = db.Column(db.String(11), nullable=False, unique=True)
-    img = db.Column(db.String(64), nullable=True)
+    email = db.Column(db.String(64), unique=True)
+    img = db.Column(db.String(512), nullable=True)
     status = db.Column(db.Integer, default=0)
+    truename = db.Column(db.String(16), nullable=True, default="")
+    sex = db.Column(db.String(8), nullable=True, default='男')
+    birthday = db.Column(db.Date, nullable=True)
+    addr = db.Column(db.String(64), nullable=True, default="")
+    profession = db.Column(db.String(64), nullable=True, default="")
+    job = db.Column(db.String(32), nullable=True, default="")
+    intro = db.Column(db.String(200), nullable=True, default="")
     blogs = db.relationship("Blog", backref="user", lazy="dynamic")
     comments = db.relationship("Comment", backref="user", lazy="dynamic")
+
+    def to_dic(self):
+        dic = {
+            "id": self.id,
+            "uname": self.uname,
+            "phone": self.phone,
+            "email": self.email,
+            "img": self.img,
+            "truename": self.truename,
+            "sex": self.sex,
+            "birthday": str(self.birthday),
+            "addr": self.addr,
+            "profession": self.profession,
+            "job": self.job,
+            "intro": self.intro,
+        }
+        return dic
 
 
 # 创建博客表
@@ -177,7 +202,7 @@ def do_log():
                 # 数据库里查询用户对象
                 user = User.query.filter_by(uname=uname).first()
                 # 判断用户名和id是否匹配
-                if user and user.id == id and user.phone[-4:] == phone:
+                if user and user.status == 1 and user.id == id and user.phone[-4:] == phone:
                     # 如果匹配则把用户名存入session中
                     session["uname"] = uname
                     # 返回响应对象
@@ -197,7 +222,7 @@ def do_log():
         user = db.session.query(User).filter(
             or_(User.uname == uname, User.phone == uname)).first()
         # 判断对象是否存在,密码是否正确
-        if user and user.pwd == pwd:
+        if user and user.status == 1 and user.pwd == pwd:
             # 保存uname到session中
             session["uname"] = user.uname
             # 判断用户是否选择了记录密码
@@ -218,8 +243,13 @@ def do_log():
 
 @app.route('/logout')
 def logout():
-    session.pop("uname")
-    return redirect("/login")
+    resp = make_response(redirect('/'))
+    if 'uname' in session:
+        session.pop("uname")
+    if 'uname' in request.cookies:
+        resp.delete_cookie("uname", path='/', domain='176.234.2.27')
+        resp.delete_cookie("id", path='/', domain='176.234.2.27')
+    return resp
 
 
 # 重置密码
@@ -327,8 +357,8 @@ def index():
         else:
             return render_template("index.html", params=locals())
     else:
-        # 否则返回未登录页面
-        return render_template("login.html", params=locals())
+        # 否则返回首页
+        return render_template("index.html", params=locals())
 
 
 @app.route("/index-server")
@@ -351,65 +381,73 @@ def index_server():
 # 查看博客
 @app.route("/blog")
 def get_blog():
-    # 获取帖子标题
-    id = request.args['blog_id']
-    # 根据帖子标题查找相应的对象
-    blog = Blog.query.filter(Blog.id==id, Blog.status==True).first()
-    content = re.findall(r'.*', blog.content)
-    # 提取页面中要是显示的楼主信息
-    user = User.query.filter_by(id=blog.user_id).first()
-    myname = session['uname']
-    my = User.query.filter_by(uname=myname).first()
-    return render_template("blog.html", params=locals())
+    if 'uname' not in session:
+        return "<script>alert('请先登录');location.href='/login'</script>"
+    else:
+        # 获取帖子标题
+        id = request.args['blog_id']
+        # 根据帖子标题查找相应的对象
+        blog = Blog.query.filter(Blog.id==id, Blog.status==True).first()
+        content = re.findall(r'.*', blog.content)
+        # 提取页面中要是显示的楼主信息
+        comments = Comment.query.filter_by(blog_id=blog.id)
+        user_list = []
+        for comment in comments:
+            comm_user = User.query.filter_by(id=comment.user_id).first()
+            user_list.append(comm_user)
+        user = User.query.filter_by(id=blog.user_id).first()
+        myname = session['uname']
+        my = User.query.filter_by(uname=myname).first()
+        return render_template("blog.html", params=locals())
 
 
 @app.route("/comment", methods=['POST'])
 def comment():
-    comment = Comment()
-    comment.text = request.form['comment']
-    comment.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
-    comment.blog_id = request.form['blog-id']
-    comment.user_id = request.form['uid']
-    try:
-        db.session.add(comment)
-        return "<script>alert('评论成功');location.href('/blog?blog_title=python基础')</script>"
-    except Exception:
-        return "<script>alert('评论失败')</script>"
+    if 'uname' not in session:
+        return "<script>alert('请先登录');location.href='/login'</script>"
+    else:
+        comment = Comment()
+        comment.text = request.form['comment']
+        comment.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+        comment.blog_id = request.form['blog-id']
+        comment.user_id = request.form['uid']
+        try:
+            db.session.add(comment)
+            return redirect('/blog?blog_id='+request.form['blog-id'])
+        except Exception:
+            return "<script>alert('评论失败')</script>"
 
 
 # 编写微博
 @app.route("/write_blog", methods=['GET', 'POST'])
 def write_blog():
-    # get方法获取页面数据，post方法提交发表内容
-    if request.method == 'GET':
-        # 判断用户是否登录,是则提取页面信息,否跳转登录
-        if 'uname' in session:
+    if 'uname' not in session:
+        return "<script>alert('请先登录');location.href='/login'</script>"
+    else:
+        # get方法获取页面数据，post方法提交发表内容
+        if request.method == 'GET':
+            # 判断用户是否登录,是则提取页面信息,否跳转登录
+            if 'uname' in session:
+                uname = session['uname']
+                user = User.query.filter_by(uname=uname).first()
+                return render_template("write.html", params=locals())
+            else:
+                return redirect('/login')
+        else:
             uname = session['uname']
             user = User.query.filter_by(uname=uname).first()
-            # blog_num = 0
-            # for i in user.blogs:
-            #     blog_num += 1
-            # comment_num = 0
-            # for i in user.comments:
-            #     comment_num += 1
-            return render_template("write.html", params=locals())
-        else:
-            return redirect('/login')
-    else:
-        uname = session['uname']
-        user = User.query.filter_by(uname=uname).first()
-        blog = Blog()
-        blog.title = request.form['title']
-        blog.tags = request.form['type']
-        blog.content = request.form['content']
-        print(request.form['content'])
-        blog.user_id = user.id
-        blog.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
-        try:
-            db.session.add(blog)
-            return "<script>alert('发表成功');window.location.href='/manage_blog'</script>"
-        except Exception:
-            return "<script>alert('发表失败')</script>"
+            blog = Blog()
+            blog.title = request.form['title']
+            blog.tags = request.form['type']
+            blog.content = request.form['content']
+            print(request.form['content'])
+            blog.user_id = user.id
+            blog.time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+            try:
+                db.session.add(blog)
+                return "<script>alert('发表成功');window.location.href='/manage_blog'</script>"
+            except Exception:
+                return "<script>alert('发表失败')</script>"
 
 
 # 博客管理
@@ -421,7 +459,6 @@ def manager_blog():
         uname = session['uname']
         user = User.query.filter_by(uname=uname).first()
         blogs = Blog.query.filter(Blog.user_id == user.id, Blog.status == True).all()
-        blog_num = 0
     return render_template("blog_manage.html", params=locals())
 
 
@@ -447,18 +484,97 @@ def blog_manage_server1():
 def delete_blog():
     title = request.args['title']
     uname = session['uname']
-    print(uname)
     user = User.query.filter_by(uname=uname).first()
-    print(user.id)
-    blog = Blog.query.filter(Blog.title == title, Blog.user_id == user.id
-                             ).first()
-    print(blog)
+    blog = Blog.query.filter(Blog.title == title, Blog.user_id == user.id).first()
     try:
         blog.status = False
         db.session.add(blog)
         return "1"
     except Exception:
         return "0"
+
+
+@app.route('/center')
+def center():
+    if 'uname' not in session:
+        return "<script>alert('请先登录');location.href='/login'</script>"
+    else:
+        uname = session['uname']
+        user = User.query.filter_by(uname=uname).first()
+        user_list = user.to_dic()
+        for key in user_list:
+            if user_list[key] in ['null', 'NULL', 'None']:
+                user_list[key] = ""
+        return render_template('center.html', params=locals())
+
+
+@app.route('/center-server', methods=['GET', 'POST'])
+def center_server():
+    if 'uname' not in session:
+        return "<script>alert('请先登录');location.href='/login'</script>"
+    else:
+        uname = session['uname']
+        user = User.query.filter_by(uname=uname).first()
+        if request.method == 'GET':
+            user_list = user.to_dic()
+            for key in user_list:
+                if user_list[key] in ['null', 'NULL', 'None', None]:
+                    user_list[key] = ""
+            return json.dumps(user_list)
+        else:
+            user.truename = request.form.get('truename', "")
+            user.sex = request.form.get('sex', "")
+            user.email = request.form.get('email', "")
+            user.birthday = request.form.get('birthday', "")
+            user.addr = request.form.get('addr', "")
+            user.profession = request.form.get('profession', "")
+            user.job = request.form.get('job', "")
+            user.intro = request.form.get('intro', "")
+            try:
+                db.session.add(user)
+                return "<script>alert('修改成功！');location.href='/center'</script>"
+            except Exception:
+                return "<script>alert('修改失败！');location.href='/center'</script>"
+
+
+@app.route('/update-pwd', methods=['GET', 'POST'])
+def update_pwd():
+    if 'uname' not in session:
+        return "<script>alert('请先登录');location.href='/login'</script>"
+    else:
+        uname = session['uname']
+        user = User.query.filter_by(uname=uname).first()
+        if request.method == 'GET':
+            upwd = user.pwd
+            data = {'upwd': upwd}
+            print(data)
+            return json.dumps(data)
+        else:
+            user.pwd = request.form.get('newpwd')
+            try:
+                db.session.add(user)
+                return "<script>alert('修改成功！');location.href='/center'</script>"
+            except Exception:
+                return "<script>alert('修改失败！');location.href='/center'</script>"
+
+
+@app.route('/update-email', methods=['GET', 'POST'])
+def update_email():
+    if 'uname' not in session:
+        return "<script>alert('请先登录');location.href='/login'</script>"
+    else:
+        uname = session['uname']
+        user = User.query.filter_by(uname=uname).first()
+        if request.method == 'GET':
+            user_dic = user.to_dic()
+            return json.dumps(user_dic)
+        else:
+            user.email = request.form.get('newemail')
+            try:
+                db.session.add(user)
+                return "<script>alert('修改成功！');location.href='/center'</script>"
+            except Exception:
+                return "<script>alert('修改失败！');location.href='/center'</script>"
 
 
 @app.route('/search')
@@ -473,7 +589,6 @@ def search():
         blog_dic['uname'] = user.uname
         blog_dic['content'] = blog.content[0:100] + '. . .'
         blist.append(blog_dic)
-        print(blog.id)
     return json.dumps(blist)
 
 

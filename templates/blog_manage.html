@@ -51,9 +51,9 @@
                 <ol class="list">
                     <li><a href="">我的关注</a></li>
                     <li><a href="">我的收藏</a></li>
-                    <li><a href="">个人中心</a></li>
-                    <li><a href="/manage_blog">帖子管理</a></li>
-                    <li><a href="/login" id="logout">注销</a></li>
+                    <li><a href="{{ url_for('center') }}">个人中心</a></li>
+                    <li><a href="{{ url_for('manager_blog') }}">帖子管理</a></li>
+                    <li><a href="{{ url_for('logout') }}" id="logout">注销</a></li>
                 </ol>
             </li>
         </ul>
@@ -76,7 +76,7 @@
             <div id="left2">
                 <div>
                     <p>原创</p>
-                    <p>{{ params.user.blogs.all()|length|default(0) }}</p>
+                    <p>{{ params.blogs|length|default(0) }}</p>
                 </div>
                 <div>
                     <p>粉丝</p>
@@ -137,6 +137,11 @@
         </div>
     </div>
 <!--底部页脚-->
-    <div id="footer"></div>
+    <div id="bottom">
+        <a href="/about">关于brother forum</a>
+        <span id="copyright">Copyright &copy; 2019 </span>
+        <a href="/index">兄弟论坛</a>
+        <span id="version">版权所有 version1.0</span>
+    </div>
 </body>
 </html>

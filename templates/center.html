@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="Generator" content="EditPlus®">
+    <meta name="Author" content="">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="">
+    <title>个人中心</title>
+    <link rel="icon" href="../static/images/icon.png">
+    <link rel="stylesheet" href="../static/css/base.css" type="text/css">
+    <link rel="stylesheet" href="../static/css/center.css" type="text/css">
+    <script src="../static/js/jquery-1.11.3.js"></script>
+    <script src="../static/js/center.js"></script>
+</head>
+<body>
+<div id="top">
+    <div class="topleft">
+        <img class="item" src="../static/images/456.png">
+        <p class="item">Bother Forum</p>
+    </div>
+    <div class="topcenter">
+
+        <div class="tags">
+            <a href="/">首页</a>
+            <ul>
+                <a href="" class="type" style="width: 120px;">文章列表</a>
+                <ol class="type_list">
+                    <li><a href="">基础应用</a></li>
+                    <li><a href="">网络编程</a></li>
+                    <li><a href="">应用开发</a></li>
+                    <li><a href="">人工智能</a></li>
+                </ol>
+            </ul>
+            <a href="" class="last_a">每日推荐</a>
+        </div>
+    </div>
+    <div class="topright">
+        <img src="../static/images/message-icon.png" height="24" width="30"/>
+        <p><a href="">消息</a></p>
+        <img src="../static/images/write_blog.png" height="24" width="30"/>
+        <p><a href="/write_blog">写博客</a></p>
+        <a href="/login" class="regs">登陆</a>
+        <a href="/regist" class="log">注册</a>
+    </div>
+    <ul>
+        <li class="pic">
+            <div class="img">
+                {% if params.user.img %}
+                    <a href=""><img src="{{ params.user.img }}" alt=""></a>
+                {% else %}
+                    <a href=""><img src="../static/images/icon.png" alt=""></a>
+                {% endif %}
+            </div>
+            <ol class="list">
+                <li><a href="">我的关注</a></li>
+                <li><a href="">我的收藏</a></li>
+                <li><a href="/center">个人中心</a></li>
+                <li><a href="/manage_blog">帖子管理</a></li>
+                <li><a href="/logout" id="logout">注销</a></li>
+            </ol>
+        </li>
+    </ul>
+</div>
+<div id="box-left">
+    <div>
+        <a href="javascript:void(0)" id="write-info">编辑资料</a>
+    </div>
+    <div>
+        <a href="">我的关注</a>
+    </div>
+    <div>
+        <a href="">我的收藏</a>
+    </div>
+    <div>
+        <a href="{{ url_for('manager_blog') }}">我的博客</a>
+    </div>
+    <div>
+        <a id="update-pwd">修改密码</a>
+    </div>
+    <div>
+        <a id="update-email">修改邮箱</a>
+    </div>
+    <div>
+        <a>修改手机</a>
+    </div>
+</div>
+<div id="box-right">
+    <!--顶部-->
+    <div id="topp">
+        <h2>个人中心</h2>
+        <hr>
+    </div>
+    <!--顶部-->
+    <div id="left">
+        {% if params.user.img %}
+                    <img src="{{ params.user.img }}" alt="">
+                {% else %}
+                    <img src="../static/images/icon.png" alt="">
+                {% endif %}
+        <a href="">修改头像</a>
+    </div>
+    <div id="right">
+        <p class="ID">ID：{{ params.user.uname }}</p>
+        <hr>
+        <div id="info">
+            <p>关注：</p>
+            <p>粉丝：</p>
+            <p>昵称： {{ params.user.uname }}</p>
+            <p>实名： {{ params.user.truename }}</p>
+            <p>性别： {{ params.user.sex}}</p>
+            <p>邮箱： {{ params.user.email }}</p>
+            <p>生日： {{ params.user.birthday }}</p>
+            <p>地区： {{ params.user.addr }}</p>
+            <p>行业： {{ params.user.profession }}</p>
+            <p>职位： {{ params.user.job }}</p>
+            <p>简介： {{ params.user.intro }}</p>
+        </div>
+    </div>
+</div>
+<!--底部页脚-->
+    <div id="bottom">
+        <a href="/about">关于brother forum</a>
+        <span id="copyright">Copyright &copy; 2019 </span>
+        <a href="/index">兄弟论坛</a>
+        <span id="version">版权所有 version1.0</span>
+    </div>
+</body>
+</html>

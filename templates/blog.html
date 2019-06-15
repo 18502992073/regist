@@ -5,58 +5,59 @@
     <title>我的第一篇博客</title>
 <!--    <title>{{params.title}}</title>-->
     <link rel="shortcut icon" href="../static/images/1.png" type="text/png">
-    <link rel="stylesheet" href="../static/css/blog.css">
+    <link rel="stylesheet" href="../static/css/blog.css" type="text/css">
     <script src="../static/js/jquery-1.11.3.js"></script>
     <script src="../static/js/blog.js"></script>
 </head>
 <body>
     <div id="top">
-        <div class="topleft">
-            <img class="item" src="../static/images/456.png">
-            <p class="item">Bother Forum</p>
-        </div>
-        <div class="topcenter">
-            <div class="tags">
-                <a href="/">首页</a>
-                <ul>
-                    <a href="" class="type" style="width: 120px;">文章列表</a>
-                    <ol class="type_list">
-                        <li><a href="">基础应用</a></li>
-                        <li><a href="">网络编程</a></li>
-                        <li><a href="">应用开发</a></li>
-                        <li><a href="">人工智能</a></li>
-                    </ol>
-                </ul>
-                <a href="" class="last_a">每日推荐</a>
-            </div>
-        </div>
-        <div class="topright">
-            <img src="../static/images/message-icon.png" height="24" width="30"/>
-            <p><a href="">消息</a></p>
-            <img src="../static/images/write_blog.png" height="24" width="30"/>
-            <p><a href="/write_blog">写博客</a></p>
-            <a href="/login" class="regs">登陆</a>
-            <a href="/regist" class="log">注册</a>
-        </div>
-        <ul>
-            <li class="pic">
-                <div class="img">
-                    {% if params.my.img %}
-                        <a href=""><img src="{{ params.my.img }}" alt=""></a>
-                    {% else %}
-                        <a href=""><img src="../static/images/icon.png" alt=""></a>
-                    {% endif %}
-                </div>
-                <ol class="list">
-                    <li><a href="">我的关注</a></li>
-                    <li><a href="">我的收藏</a></li>
-                    <li><a href="">个人中心</a></li>
-                    <li><a href="/manage_blog">帖子管理</a></li>
-                    <li><a href="/login" id="logout">注销</a></li>
-                </ol>
-            </li>
-        </ul>
+    <div class="topleft">
+        <img class="item" src="../static/images/456.png">
+        <p class="item">Bother Forum</p>
     </div>
+    <div class="topcenter">
+
+        <div class="tags">
+            <a href="/">首页</a>
+            <ul>
+                <a href="" class="type" style="width: 120px;">文章列表</a>
+                <ol class="type_list">
+                    <li><a href="">基础应用</a></li>
+                    <li><a href="">网络编程</a></li>
+                    <li><a href="">应用开发</a></li>
+                    <li><a href="">人工智能</a></li>
+                </ol>
+            </ul>
+            <a href="" class="last_a">每日推荐</a>
+        </div>
+    </div>
+    <div class="topright">
+        <img src="../static/images/message-icon.png" height="24" width="30"/>
+        <p><a href="">消息</a></p>
+        <img src="../static/images/write_blog.png" height="24" width="30"/>
+        <p><a href="/write_blog">写博客</a></p>
+        <a href="/login" class="regs">登陆</a>
+        <a href="/regist" class="log">注册</a>
+    </div>
+    <ul>
+        <li class="pic">
+            <div class="img">
+                {% if params.my.img %}
+                    <a href=""><img src="{{ params.my.img }}" alt=""></a>
+                {% else %}
+                    <a href=""><img src="../static/images/icon.png" alt=""></a>
+                {% endif %}
+            </div>
+            <ol class="list">
+                <li><a href="">我的关注</a></li>
+                <li><a href="">我的收藏</a></li>
+                <li><a href="/center">个人中心</a></li>
+                <li><a href="/manage_blog">帖子管理</a></li>
+                <li><a href="/logout" id="logout">注销</a></li>
+            </ol>
+        </li>
+    </ul>
+</div>
     <div id="middle">
         <div class="middleleft">
             <div class="personal">
@@ -89,11 +90,6 @@
                         <p>评论</p>
                         <p  class="num4">
                             {{ params.user.comments.all()|length|default(0) }}
-{#                            {% if params.comment_num %}#}
-{#                                {{ params.comment_num }}#}
-{#                            {% else %}#}
-{#                                0#}
-{#                            {% endif %}#}
                         </p>
                     </div>
                 </div>
@@ -146,19 +142,19 @@
                     <input class="kown" type="radio" name="comment_type" value="kown" id="kown" checked><label for="kown">公开评论</label>
                     <input class="unkown" type="radio" name="comment_type" value="unkown" id="unkown"><label for="unkown">匿名评论</label>
                     <input type="hidden" name="blog-id" value="{{ params.blog.id }}">
-                    <input type="hidden" name="uid" value="{{ params.user.id }}">
+                    <input type="hidden" name="uid" value="{{ params.my.id }}">
                     <button>发表评论</button>
                 </form>
                 {% for comm in params.blog.comments %}
                     <div class="comment_contant">
                         <img src="
-                            {% if params.user.img %}
-                                {{ params.user.img }}
+                            {% if params.user_list[loop.index0].img %}
+                                {{ params.user_list[loop.index0].img }}
                             {% else %}
                                 ../static/images/icon.png
                             {% endif %}"
                              alt="">
-                        <a href="">{{ params.user.uname }}</a>
+                        <a href="">{{ params.user_list[loop.index0].uname }}</a>
                         <span class="comment_show">{{ comm.text }}</span>
                         <span>({{ comm.time }} {{ loop.index }}楼)</span>
                         <a href="" class="first_a">举报</a>
@@ -188,6 +184,12 @@
             </div>
         </div>
     </div>
-    <div id="bottom"></div>
+    <!--底部页脚-->
+    <div id="bottom">
+        <a href="/about">关于brother forum</a>
+        <span id="copyright">Copyright &copy; 2019 </span>
+        <a href="/index">兄弟论坛</a>
+        <span id="version">版权所有 version1.0</span>
+    </div>
 </body>
 </html>

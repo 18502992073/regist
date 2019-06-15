@@ -3,7 +3,6 @@ $(function () {
     $("[name=name]").change(function () {
         var name=$("[name=name]").val();
         uname_is_ok = false;
-        console.log(name);
         var reg=/\w*/;
         if (reg.test(name) && name.length>0){
             $(this).next("p").html("√").css("color","green");
