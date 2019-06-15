@@ -1,3 +1,5 @@
+import json
+import os
 import re
 from time import *
 
@@ -8,7 +10,8 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
-import json
+
+from vertify_code import GetCode
 
 pymysql.install_as_MySQLdb()
 
@@ -19,7 +22,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['DEBUG'] = True
 # 执行完增删改之后的自动提交
 app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = True
-app.config["SECRET_KEY"]='zheshiyigeluntandesession123456'
+app.config["SECRET_KEY"] = 'zheshiyigeluntandesession123456'
 
 db = SQLAlchemy(app)
 manager = Manager(app)
@@ -39,8 +42,8 @@ class User(db.Model):
     pwd = db.Column(db.String(32), nullable=False)
     phone = db.Column(db.String(11), nullable=False, unique=True)
     email = db.Column(db.String(64), unique=True)
-    img = db.Column(db.String(512), nullable=True)
-    status = db.Column(db.Integer, default=0)
+    img = db.Column(db.String(1024), nullable=True)
+    status = db.Column(db.Integer, default=1)
     truename = db.Column(db.String(16), nullable=True, default="")
     sex = db.Column(db.String(8), nullable=True, default='男')
     birthday = db.Column(db.Date, nullable=True)
@@ -115,18 +118,20 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
-"""cookie的加密设置"""
-# response.set_signed_cookie('email',email,salt="salt")
-"""cookie的获取解密"""
+class UserRelatiuonship(db.Model):
+    __tablename__ = "relationship"
+    id = db.Column(db.Integer, primary_key=True)
+    focus_id = db.Column(db.Integer, nullable=False)
+    focused_id = db.Column(db.Integer, nullable=False)
+    status = db.Column(db.Boolean, default=1)
 
-
-# responset.get_signed_cookie('email',email,salt="salt")
 
 # 用户注册
 @app.route("/regist", methods=["POST", "GET"])
 def do_regist():
     # 设定默认响应对象为主页
     resp = make_response(redirect("/index"))
+    response_add = "/index"
     if "uname" in session:
         return resp
     # 判断请求头headers中是否含有Referer
@@ -135,6 +140,7 @@ def do_regist():
         refer = request.headers["Referer"]
         # 找到页面源的路由地址
         addr = re.split("5000", refer)[-1]
+        response_add = addr
         # 如果页面来源不是重置密码页面
         if addr not in ["/reset_pwd", "/login", "/regist"]:
             # 把响应对象更新为页面源地址
@@ -145,6 +151,7 @@ def do_regist():
         return render_template("regist.html")
     # 用户请求提交注册信息
     else:
+        print("验证数据")
         # 获取用户提交的信息
         name = request.form["name"]
         phone = request.form["phone"]
@@ -152,23 +159,74 @@ def do_regist():
         res1 = User.query.filter_by(uname=name).first()
         res2 = User.query.filter_by(phone=phone).first()
         # 如果用户的两次输入密码相同,并且根据用户名和手机号在数据库里未查找到用户对象
-        if request.form["rpwd"] == request.form[
-            "pwd"] and not res1 and not res2:
+        if request.form["rpwd"] == request.form["pwd"] and not res1 and not res2:
             # 用户注册成功,加用户信息进入数据库
-            try:
-                user = User()
-                user.uname = name
-                user.pwd = request.form["pwd"]
-                user.phone = phone
-                db.session.add(user)
-                session["uname"] = name
-                return resp
-            except Exception as e:
-                return "<script>alert(%s);location.href='/regist'</script>" % e
+            user = User()
+            user.uname = name
+            user.pwd = request.form["pwd"]
+            user.phone = phone
+            db.session.add(user)
+            session["uname"] = name
+            dic = {"status": 1, "url": response_add}
+            return json.dumps(dic)
         elif res1:
             return "<script>alert('注册失败,用户名重复');location.href='/regist'</script>"
         else:
             return "<script>alert('注册失败,手机号重复');location.href='/regist'</script>"
+
+
+# 用ajax实现注册页面效果,获取用户输入的用户名判断
+@app.route("/01-regist")
+def registHelper():
+    # 获取用户名
+    uname = request.args["uname"]
+    # 数据库里查找用户
+    user_by_name = User.query.filter_by(uname=uname).first()
+    user_by_phone = User.query.filter_by(phone=uname).first()
+    print(user_by_phone, user_by_name)
+    # 如果用户名已存在
+    if user_by_name or user_by_phone:
+        # 返回用户名重复错误
+        print("用户存在")
+        dic = {"status": 0, "text": "用户名已存在"}
+        return json.dumps(dic)
+    # 如果用户名不存在
+    else:
+        # 返回可以注册状态
+        dic = {"status": 1, "text": "ok"}
+        return json.dumps(dic)
+
+
+# 注册页面用ajax获取手机号码判断
+@app.route("/01-regist_phone")
+def getphone():
+    # 获取手机号码
+    phone = request.args["phone"]
+    # 在数据库里查找用户
+    user = User.query.filter_by(phone=phone).first()
+    print(user)
+    if user:
+        dic = {"status": "0", "code": "此手机号码已注册"}
+    else:
+        dic = {"code": "ok", "status": "1"}
+    return json.dumps(dic)
+
+
+# ajax实现发送验证码
+@app.route("/01-regist_code")
+def getCode():
+    # 获取手机号码
+    phone = request.args["phone"]
+    getcode = GetCode()
+    # 发送验证码
+    code_num, result = getcode.sendCode(phone)
+    print("result", result, type(result))
+    if result[8] == "0":
+        dic = {"code": code_num, "status": 1}
+    else:
+        dic = {"status": 0, "code": "发送验证码错误"}
+    print("dic", dic)
+    return json.dumps(dic)
 
 
 # 用户登录
@@ -202,7 +260,7 @@ def do_log():
                 # 数据库里查询用户对象
                 user = User.query.filter_by(uname=uname).first()
                 # 判断用户名和id是否匹配
-                if user and user.status == 1 and user.id == id and user.phone[-4:] == phone:
+                if user and user.id == id and user.phone[-4:] == phone:
                     # 如果匹配则把用户名存入session中
                     session["uname"] = uname
                     # 返回响应对象
@@ -221,35 +279,57 @@ def do_log():
         # 根据用户名查找数据库数据
         user = db.session.query(User).filter(
             or_(User.uname == uname, User.phone == uname)).first()
-        # 判断对象是否存在,密码是否正确
-        if user and user.status == 1 and user.pwd == pwd:
-            # 保存uname到session中
-            session["uname"] = user.uname
-            # 判断用户是否选择了记录密码
-            if "rmb_pwd" in request.form:
-                # print("user.name:", uname)
-                # print("user.id:", user.id)
-                # 如果选择记录密码,则在cookies中存下uname和id的值
-                resp.set_cookie("uname", uname, max_age=3 * 24 * 60 * 60)
-                # id定义为forum.id.phone[-4:]作为用户的记住密码印记
-                resp.set_cookie("id",
-                                "forum." + str(user.id) + "." + user.phone[-4:],
-                                max_age=3 * 24 * 60 * 60)
-            # 不管有没有选择记录密码,都返回响应对象
-            return resp
+        print(user)
+        status = user.status
+        # 判断用户状态（0禁止登录，1可以正常登录，2已登录）
+        if status == 1:
+            # 判断对象是否存在,密码是否正确
+            if user and user.pwd == pwd:
+                # 保存uname到session中
+                session["uname"] = user.uname
+                # 设置用户状态为2,防止一个用户多次登录
+                uid = str(user.id)
+                resp.set_cookie('uid', uid, max_age=24*60*60*3)
+                user.status = 2
+                try:
+                    db.session.add(user)
+                except Exception:
+                    return "<script>alert('登录异常请联系管理员');location.href='/login'</script>"
+                # 判断用户是否选择了记录密码
+                if "rmb_pwd" in request.form:
+                    # 如果选择记录密码,则在cookies中存下uname和id的值
+                    resp.set_cookie("uname", uname, max_age=3 * 24 * 60 * 60)
+                    # id定义位forum.id.phone[-4:]作为用户的记住密码印记
+                    resp.set_cookie("id", "forum." + str(user.id) + "." + user.phone[-4:],
+                                    max_age=3 * 24 * 60 * 60)
+                # 不管有没有选择记录密码,都返回响应对象
+                return resp
+            else:
+                return render_template("login.html", params=True)
+        elif status == 0:
+            return "<script>alert('帐号异常请联系管理员');location.href='/login'</script>"
         else:
-            return render_template("login.html", params=True)
+            return "<script>alert('帐号已登录');location.href='/login'</script>"
 
 
-@app.route('/logout')
-def logout():
-    resp = make_response(redirect('/'))
-    if 'uname' in session:
-        session.pop("uname")
-    if 'uname' in request.cookies:
-        resp.delete_cookie("uname", path='/', domain='176.234.2.27')
-        resp.delete_cookie("id", path='/', domain='176.234.2.27')
-    return resp
+# 用ajax实现登录页面效果
+@app.route("/02-login")
+def loginHelper():
+    # 获取异步访问传入的用户名
+    uname = request.args["uname"]
+    # 根据用户名在数据库里查找用户
+    user_by_name = User.query.filter_by(uname=uname).first()
+    user_by_phone = User.query.filter_by(phone=uname).first()
+    # 如果用户名存在
+    if user_by_name or user_by_phone:
+        # 返回status=1
+        dic = {"status": 1, "text": "账号存在"}
+    # 如果用户名不存在
+    else:
+        # 返回status=0
+        dic = {"status": 0, "text": "账号不存在"}
+    # 返回数据
+    return json.dumps(dic)
 
 
 # 重置密码
@@ -262,21 +342,17 @@ def do_reset():
             return render_template("index.html")
         # 如果带有"reset_result"参数则说明上次的重置密码请求出错
         if "reset_result" in request.args:
-            print("重试")
             # 如果有cookie中有phnoe字段,那么就是验证码错误导致的失败
             if "phone" in request.cookies:
                 # 那么提取phone作为参数传递给页面,作为手机号输入框的初始值
                 code_phone = request.cookies["phone"]
-                code_result = True
                 phone_result = False
-                print("验证码错误:", code_result, phone_result)
-                print()
+                print("验证码错误:", phone_result)
             # 如果cookie中没有phnoe字段
             else:
                 # 那么就是手机号错误导致的失败,作为参数传递页面,显示'手机号码不正确，或尚未注册'
                 phone_result = True
-                code_result = False
-                print("手机号错误:", code_result, phone_result)
+                print("手机号错误:", phone_result)
             return render_template("reset_password.html", params=locals())
         # 如果带有"reset_result"参数返回初始页面
         else:
@@ -288,16 +364,10 @@ def do_reset():
         phone = request.form["phone"]
         pwd = request.form["reset_pwd"]
         code = request.form["code"]
-        print(code)
-        # 需要对验证码与后台进行判定
-        """用AJAX技术实现发送验证码"""
-        """----------------待实现-------------------"""
-        """如果验证码错误,则把手机号和存在cookie里作为临时数据,以便下次提交使用"""
-        get_code = str(1234)
         # 根据用户的手机号在数据库中查找用户对象
         user = User.query.filter_by(phone=phone).first()
         # 如果用户的验证码并且数据库中存在此用户对象
-        if code == get_code and user:
+        if user:
             # 在数据库中更新密码
             user.pwd = pwd
             # 更新后的用户对象加入数据库中
@@ -306,27 +376,54 @@ def do_reset():
             # 删除之前可能存下来的cookie
             if phone in request.cookies:
                 resp = make_response(
-                    "<script>alert('验证码错误,请重新确认');location.href='/"
-                    "reset_pwd?reset_result=False'</script>")
+                    "<script>alert('验证码错误,请重新确认');location.href='/reset_pwd?reset_result=False'</script>")
                 resp.delete_cookie("phone")
-            return "<script>alert('重置密码成功,请重新登录');location.href='/" \
-                   "login'</script>"
-        # 如果验证码不正确
-        elif code != get_code:
-            # 设置响应对象
-            resp = make_response(
-                "<script>alert('验证码错误,请重新确认');location.href='/"
-                "reset_pwd?reset_result=False'</script>")
-            # 设置phone作为临时cookie以便后续作为输入框初始值使用
-            resp.set_cookie("phone", phone, max_age=60)
-            # 如果用户不存在则设置cookie为空
-            if not user:
-                resp.set_cookie("phone", "", max_age=60)
-            # 返回响应对象
-            return resp
-        # 手机号不正确
+            return "<script>alert('重置密码成功,请重新登录');location.href='/login'</script>"
         else:
             return "<script>alert('手机号码错误或未注册');location.href='/reset_pwd?reset_result=False'</script>"
+
+
+# 重置密码动态路由
+@app.route("/03-reset")
+def resetHelper():
+    phone = request.args["phone"]
+    user = User.query.filter_by(phone=phone).first()
+    if user:
+        dic = {"status": 1, "text": "手机号存在"}
+    else:
+        dic = {"status": 0, "text": "手机号不存在"}
+    return json.dumps(dic)
+
+
+@app.route('/logout')
+def logout():
+    resp = make_response(redirect('/'))
+    if 'uname' in request.cookies:
+        resp.delete_cookie("uname", path='/', domain='176.234.2.27')
+        resp.delete_cookie("id", path='/', domain='176.234.2.27')
+    if 'uname' in session:
+        uname = session.get('uname')
+        user = User.query.filter_by(uname=uname).first()
+        if user.status == 2:
+            user.status = 1
+            try:
+                db.session.add(user)
+            except Exception:
+                return "<script>alert('操作异常请联系管理员')</script>"
+        session.pop("uname")
+    return resp
+
+
+@app.route("/close")
+def close_window():
+    if "uname" not in session:
+        uid = request.cookies.get("uid")
+        user = User.query.filter_by(id=uid).first()
+        if user.status == 2:
+            print("*******************************")
+            user.status = 1
+            db.session.add(user)
+    return "页面关闭"
 
 
 # 请求主页
@@ -367,13 +464,13 @@ def index_server():
     if tags == "推荐":
         blogs = Blog.query.filter(Blog.status == True).all()
     else:
-        blogs = Blog.query.filter(Blog.tags==tags, Blog.status==True).all()
+        blogs = Blog.query.filter(Blog.tags == tags, Blog.status == True).all()
     blist = []
     for blog in blogs:
         user = User.query.filter_by(id=blog.user_id).first()
         blog_dic = blog.to_dic()
         blog_dic['uname'] = user.uname
-        blog_dic['content'] = blog.content[0:100]+'. . .'
+        blog_dic['content'] = blog.content[0:100] + '. . .'
         blist.append(blog_dic)
     return json.dumps(blist)
 
@@ -387,10 +484,11 @@ def get_blog():
         # 获取帖子标题
         id = request.args['blog_id']
         # 根据帖子标题查找相应的对象
-        blog = Blog.query.filter(Blog.id==id, Blog.status==True).first()
+        blog = Blog.query.filter(Blog.id == id, Blog.status == True).first()
         content = re.findall(r'.*', blog.content)
         # 提取页面中要是显示的楼主信息
-        comments = Comment.query.filter_by(blog_id=blog.id)
+        comments = Comment.query.filter_by(blog_id=blog.id, status=True)
+        print(comments)
         user_list = []
         for comment in comments:
             comm_user = User.query.filter_by(id=comment.user_id).first()
@@ -398,6 +496,10 @@ def get_blog():
         user = User.query.filter_by(id=blog.user_id).first()
         myname = session['uname']
         my = User.query.filter_by(uname=myname).first()
+        is_focus = UserRelatiuonship.query.filter_by(focus_id=my.id,
+                                                     focused_id=user.id,
+                                                     status=True).first()
+        print("guanzhu", is_focus)
         return render_template("blog.html", params=locals())
 
 
@@ -413,7 +515,7 @@ def comment():
         comment.user_id = request.form['uid']
         try:
             db.session.add(comment)
-            return redirect('/blog?blog_id='+request.form['blog-id'])
+            return redirect('/blog?blog_id=' + request.form['blog-id'])
         except Exception:
             return "<script>alert('评论失败')</script>"
 
@@ -430,6 +532,10 @@ def write_blog():
             if 'uname' in session:
                 uname = session['uname']
                 user = User.query.filter_by(uname=uname).first()
+                fans = UserRelatiuonship.query.filter_by(focused_id=user.id,
+                                                         status=1).all()
+                blogs = Blog.query.filter_by(user_id=user.id, status=True).all()
+                print(blogs)
                 return render_template("write.html", params=locals())
             else:
                 return redirect('/login')
@@ -486,6 +592,10 @@ def delete_blog():
     uname = session['uname']
     user = User.query.filter_by(uname=uname).first()
     blog = Blog.query.filter(Blog.title == title, Blog.user_id == user.id).first()
+    comments = blog.comments
+    for comment in comments:
+        comment.status = False
+        db.session.add(comment)
     try:
         blog.status = False
         db.session.add(blog)
@@ -502,9 +612,9 @@ def center():
         uname = session['uname']
         user = User.query.filter_by(uname=uname).first()
         user_list = user.to_dic()
-        for key in user_list:
-            if user_list[key] in ['null', 'NULL', 'None']:
-                user_list[key] = ""
+        id = user.id
+        focus = len(UserRelatiuonship.query.filter_by(focus_id=id, status=1).all())
+        fans = len(UserRelatiuonship.query.filter_by(focused_id=id, status=1).all())
         return render_template('center.html', params=locals())
 
 
@@ -577,11 +687,117 @@ def update_email():
                 return "<script>alert('修改失败！');location.href='/center'</script>"
 
 
+@app.route("/modify_phone")
+def mofify_phone_views():
+    ophone = request.args.get("ophone")
+    nphone = request.args.get("nphone")
+    pwd = request.args.get("pwd")
+    uname = request.args.get("uname")
+    input_code = request.args.get("input_code")
+    code = request.args.get("code")
+    user = User.query.filter_by(uname=uname).first()
+    # 判断当前用户输入旧手机和密码是否正确
+    print(user.phone, ophone)
+    print()
+    if user.phone == ophone and user.pwd == pwd:
+        # 判断用户提供的新手机和验证码是否正确
+        print(1)
+        if len(nphone) == 11 and int(nphone) and int(code) == int(input_code):
+            user.phone = nphone
+            print(2)
+            try:
+                db.session.add(user)
+                dic = {"status": 1, "text": "修改成功"}
+            except Exception as e:
+                dic = {"status": 0, "text": "修改成功"}
+                print(e)
+        else:
+            dic = {"status": 0, "text": "用户提交数据错误"}
+    else:
+        dic = {"status": 0, "text": "用户提供数据错误"}
+    return json.dumps(dic)
+
+
+@app.route("/modify_img", methods=["POST"])
+def modify_img():
+    # 获取用户名
+    uname = session["uname"]
+    user = User.query.filter_by(uname=uname).first()
+    # 获取上传图片
+    file = request.files["user_img"]
+    # 获取时间戳
+    upload_time = strftime("%Y-%m-%d %H:%M:%S", localtime())
+    # 获取文件后缀
+    ext = file.filename.split(".")[-1]
+    # 获取上传文件名
+    real_filename = "".join(file.filename.split(".")[:-1])
+    # 判断文件格式
+    if ext.lower() in ["jpg", "jpeg", "png", "bmp"]:
+        # 生成自定义文件名
+        filename = "%s&%s&%s.%s" % (uname, upload_time, real_filename, ext)
+        # 确定相对目录
+        rel_dir = "static/upload_files/"
+        # 查找当前文件所在的绝对目录,去掉最后一个目录,表示app的绝对路径
+        base_dir = os.path.dirname(__file__)
+        # 连接路径确定文件存储路径
+        path = os.path.join(base_dir, rel_dir, filename)
+        file.save(path)
+        # 生成文件的引用路径
+        use_addr = path.split("/forum")[-1]
+        user.img = ".." + use_addr
+        db.session.add(user)
+        return redirect("/center")
+    else:
+        return "<script>alert('图片格式不支持')</script>"
+
+
+@app.route("/focus", methods=["POST"])
+def add_userelationship():
+    # 获取被关注人的id,由ajax传递的参数
+    focused_id = request.form.get("focused_id")
+    print(focused_id)
+    # 判断当前用户是否是已登录状态
+    if "uname" in session:
+        # 从session里获取用户名
+        focus_name = session["uname"]
+        # 查找数据库里的用户对象,获取id
+        focus_user = User.query.filter_by(uname=focus_name).first()
+        # 判断是否是取消关注
+        action = int(request.form.get("action"))
+        if action == 1:
+            # 判断是否有关系链存在
+            rel = UserRelatiuonship.query.filter_by(focus_id=focus_user.id,
+                                                    focused_id=focused_id).first()
+            if rel:
+                # 如果存在关系链,则修改关系状态
+                rel.status = True
+            else:
+                # 如果不存在则创建关系对象,并添加属性值
+                rel = UserRelatiuonship()
+                rel.focus_id = focus_user.id
+                rel.focused_id = focused_id
+        else:
+            rel = UserRelatiuonship.query.filter_by(focus_id=focus_user.id,
+                                                    focused_id=focused_id).first()
+            rel.status = False
+        # 保存数据库判断结果,返回结果
+        try:
+            db.session.add(rel)
+        except Exception as e:
+            print(e)
+            dic = {"status": 0, "text": "关注失败"}
+        else:
+            dic = {"status": 1, "text": "添加关注成功"}
+        return json.dumps(dic)
+    else:
+        return "<script>alert('您还未登陆,请登录后操作')"
+
+
 @app.route('/search')
 def search():
     keywords = request.args['keywords']
-    blogs = Blog.query.filter(or_(Blog.title.like('%'+keywords+'%'),
-                                  Blog.content.like('%'+keywords+'%'))).all()
+    blogs = Blog.query.filter(or_(Blog.title.like('%' + keywords + '%'),
+                                  Blog.content.like('%' + keywords + '%'))).all()
     blist = []
     for blog in blogs:
         user = User.query.filter_by(id=blog.user_id).first()

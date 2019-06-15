@@ -12,12 +12,13 @@
     <link rel="stylesheet" href="../static/css/center.css" type="text/css">
     <script src="../static/js/jquery-1.11.3.js"></script>
     <script src="../static/js/center.js"></script>
+    <script src="../static/js/close.js"></script>
 </head>
 <body>
 <div id="top">
     <div class="topleft">
         <img class="item" src="../static/images/456.png">
-        <p class="item">Bother Forum</p>
+        <p class="item">Brother Forum</p>
     </div>
     <div class="topcenter">
 
@@ -82,7 +83,7 @@
         <a id="update-email">修改邮箱</a>
     </div>
     <div>
-        <a>修改手机</a>
+        <a id="modify_phone">修改手机</a>
     </div>
 </div>
 <div id="box-right">
@@ -93,28 +94,30 @@
     </div>
     <!--顶部-->
     <div id="left">
+        <div id="uimg">
         {% if params.user.img %}
-                    <img src="{{ params.user.img }}" alt="">
-                {% else %}
-                    <img src="../static/images/icon.png" alt="">
-                {% endif %}
-        <a href="">修改头像</a>
+            <img src="{{ params.user.img }}" alt="">
+        {% else %}
+            <img src="../static/images/icon.png" alt="">
+        {% endif %}
+        </div>
+        <a id="modify_img">修改头像</a>
     </div>
     <div id="right">
         <p class="ID">ID：{{ params.user.uname }}</p>
         <hr>
         <div id="info">
-            <p>关注：</p>
-            <p>粉丝：</p>
+            <p>关注：{{ params.focus }}</p>
+            <p>粉丝：{{ params.fans }}</p>
             <p>昵称： {{ params.user.uname }}</p>
-            <p>实名： {{ params.user.truename }}</p>
-            <p>性别： {{ params.user.sex}}</p>
-            <p>邮箱： {{ params.user.email }}</p>
-            <p>生日： {{ params.user.birthday }}</p>
-            <p>地区： {{ params.user.addr }}</p>
-            <p>行业： {{ params.user.profession }}</p>
-            <p>职位： {{ params.user.job }}</p>
-            <p>简介： {{ params.user.intro }}</p>
+            <p>实名： {% if params.user.truename %}{{ params.user.truename }}{% endif %}</p>
+            <p>性别： {% if params.user.sex %}{{ params.user.sex}}{% endif %}</p>
+            <p>邮箱： {% if params.user.email %}{{ params.user.email }}{% endif %}</p>
+            <p>生日： {% if params.user.birthday %}{{ params.user.birthday }}{% endif %}</p>
+            <p>地区： {% if params.user.addr %}{{ params.user.addr }}{% endif %}</p>
+            <p>行业： {% if params.user.profession %}{{ params.user.profession }}{% endif %}</p>
+            <p>职位： {% if params.user.job %}{{ params.user.job }}{% endif %}</p>
+            <p>简介： {% if params.user.intro %}{{ params.user.intro }}{% endif %}</p>
         </div>
     </div>
 </div>

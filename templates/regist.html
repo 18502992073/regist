@@ -5,8 +5,9 @@
     <title>注册兄弟论坛账号</title>
 	<link rel="icon" href="../static/images/icon.png" type="img/png" />
     <link rel="stylesheet" href="../static/css/regist.css" type="text/css">
-    <script src="../static/js/jquery-1.11.3.js"></script>
-    <script src="../static/js/regist.js"></script>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script src="/static/js/regist.js"></script>
+    <script src="../static/js/close.js"></script>
 </head>
 <body>
 <div>
@@ -18,16 +19,15 @@
         </div>
     </div>
     <div id="middle">
-        <form action="/regist" method="post" enctype="multipart/form-data">
             <div class="form-line">
                 <p class="front">用户名</p>
                 <input type="text" name="name" placeholder="请设置用户名" maxlength="20" required>
-                <p class="back">汉字、数字、字母、下划线组成,最长20字符</p>
+                <p class="back" id="uname-tip">汉字、数字、字母、下划线组成，不少于2位,最长20字符</p>
             </div>
             <div class="form-line">
                 <p class="front">密码</p>
                 <input type="password" name="pwd" placeholder="请设置登录密码" maxlength="20" required>
-                <p class="back">支持数字大小写字母不允许有空格,不少于6位，最长20字符</p>
+                <p class="back">支持数字大小写字母不允许有空格，不少于8位，最长20字符</p>
             </div>
             <div class="form-line">
                 <p class="front">确认密码</p>
@@ -41,8 +41,9 @@
             </div>
             <div class="form-line">
                 <p class="front">验证码</p>
-                <input type="text" name="idcode" placeholder="请输入验证码" maxlength="6" >
+                <input type="text" name="idcode" placeholder="请输入验证码" maxlength="6" id="idcode">
                 <button id="idcode-btn">发送验证码</button>
+                <span id="codetips" style="font-size: 12px;font-weight:bold;color: red"></span>
             </div>
             <div class="form-line">
                 <p class="front"></p>
@@ -57,7 +58,6 @@
                 <input type="submit" value="注册" id="register-btn">
                 <p class="back"></p>
             </div>
-        </form>
     </div>
     <div id="bottom">
         <a href="/about">关于brother forum</a>

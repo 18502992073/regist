@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../static/css/login.css">
     <script src="../static/js/jquery-1.11.3.js"></script>
     <script src="../static/js/login.js"></script>
+    <script src="../static/js/login_ajax.js"></script>
 </head>
 <body>
 
@@ -26,7 +27,7 @@
 				<img src="../static/images/tittle.png" title="登陆一下嘛..">
 			</div>
             <span
-                {% if params.user %}
+                {% if params %}
                     style="visibility:inherit"
                 {% else %}
                     style="visibility:hidden"
@@ -35,9 +36,10 @@
             <div class="form-line" style="clear:both">
                 <p>账号</p>
                 <span class="clearinput">
-                    <input type="text" name="uname" placeholder="请输入用户名或手机号码" maxlength="11" class="uinput" required>
+                    <input type="text" name="uname" placeholder="请输入用户名或手机号码" maxlength="11" class="uinput" id="uname" required>
                     <img src="../static/images/input1.png" class="clearimg"></span>
                 </span>
+                <label id="tigs"></label>
             </div>
             <div class="form-line">
                 <p>密码</p>
@@ -58,7 +60,7 @@
             <div class="form-line">
                 <p></p>
                 <div id="submit2">
-                    <input type="submit" value="登陆" class="but">
+                    <input type="submit" value="登陆" class="but" id="btnLogin">
                     <a href="/regist" class="but">会员注册</a>
                 </div>
             </div>

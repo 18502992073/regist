@@ -5,13 +5,14 @@
     <title>我的博客</title>
     <link rel="icon" href="../static/images/icon.png" type="img/png">
     <link rel="stylesheet" href="../static/css/write.css" type="text/css">
+    <script src="../static/js/close.js"></script>
 </head>
 <body>
 <!--顶部导航-->
 <div id="top">
     <div class="topleft">
         <img class="item" src="../static/images/456.png">
-        <p class="item">Bother Forum</p>
+        <p class="item">Brother Forum</p>
     </div>
     <div class="topcenter">
 
@@ -71,11 +72,11 @@
             <div id="left2">
                 <div>
                     <p>原创</p>
-                    <p>{{ params.user.blogs.all()|length }}</p>
+                    <p>{{ params.blogs|length|default(0) }}</p>
                 </div>
                 <div>
                     <p>粉丝</p>
-                    <p>0</p>
+                    <p>{{ params.fans|length|default(0) }}</p>
                 </div>
                 <div>
                     <p>点赞</p>
@@ -117,7 +118,7 @@
                     <span>添加图片</span><input type="file" name="img">
                 </div>-->
                 <div id="line4">
-                    <span>内容</span><textarea name="content" rows="21" maxlength="1000" required></textarea>
+                    <span>内容</span><textarea name="content" rows="21" maxlength="20000" required></textarea>
                 </div>
                 <input type="submit" value="发表" id="line5">
             </form>

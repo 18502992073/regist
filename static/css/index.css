@@ -25,7 +25,7 @@ body{
 }
 /*1.1 左侧logo*/
 #top .topleft{
-    width:500px;
+    width:420px;
     float:left;
     margin-left:40px;
 }
@@ -37,7 +37,7 @@ body{
 }
 .topleft p{
     float:left;
-    margin:0 50px;
+    margin:0 10px;
     font-size:32px;
     color:mediumpurple;
     font-weight: bold;
@@ -159,6 +159,7 @@ body{
     width:30px;
     height:30px;
     display: inline-block;
+    border-radius: 50%;
     /*visibility: visible;*/
 }
 .pic .list{
@@ -209,8 +210,6 @@ body{
     margin-right:20px;
     font-size: 16px;
     color:palevioletred;
-    /*visibility:visible;*/
-    display:none;
 }
 .topright .regs{
     margin-left:20px;

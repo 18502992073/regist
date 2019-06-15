@@ -1,7 +1,7 @@
 /*
     登陆页面的特效
 */
-$(document).ready(function () {
+$(document).ready(function(){
     // 点击图片清空输入框内容
     $(".clearimg").click(function () {
         $(this).siblings("input").val("");
@@ -26,7 +26,7 @@ $(document).ready(function () {
     });
     //当输入框获取焦点时，取消tips显示
     $(".clearinput input").focus(function(){
-        console.log("123")
         $("#tips").removeAttr("style")
     })
+
 });

@@ -117,7 +117,50 @@ $(function(){
     $("#submit-comment").click(function () {
 
     })
-
+    $("#focus_btn").click(function(){
+        if($("#focus").text.length!=0){
+            if($("#focus_btn").text()=="关注"){
+                var foc_params={"focused_id":$("#focused_id").text(),"action":1};
+                console.log(foc_params);
+                $.ajax({
+                url:"/focus",
+                type:"post",
+                data:foc_params,
+                async:false,
+                dataType:"json",
+                success:function (data) {
+                    if (data.status==1){
+                        $("#focus_btn").text("已关注").css("background","thistle");
+                        alert("关注成功")
+                    }else{
+                        alert("关注失败,请稍后重试")
+                    }
+                }
+            })
+            }else{
+                var del_params={"focused_id":$("#focused_id").text(),"action":0};
+                console.log(del_params);
+                $.ajax({
+                url:"/focus",
+                type:"post",
+                data:del_params,
+                async:false,
+                dataType:"json",
+                success:function (data) {
+                    if (data.status==1){
+                        $("#focus_btn").text("关注").css("background","transparent");
+                        alert("取消关注成功")
+                    }else{
+                        alert("取消关注失败,请稍后重试")
+                    }
+                }
+            })
+            }
+        }else{
+            alert('您还未登录,请登录后操作');
+            window.location.href="/login"
+        }
+    })
 
 
 });

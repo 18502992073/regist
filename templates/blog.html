@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>我的第一篇博客</title>
-<!--    <title>{{params.title}}</title>-->
+    <!--    <title>{{params.title}}</title>-->
     <link rel="shortcut icon" href="../static/images/1.png" type="text/png">
     <link rel="stylesheet" href="../static/css/blog.css" type="text/css">
     <script src="../static/js/jquery-1.11.3.js"></script>
     <script src="../static/js/blog.js"></script>
+    <script src="../static/js/close.js"></script>
 </head>
 <body>
-    <div id="top">
+<div id="top">
     <div class="topleft">
         <img class="item" src="../static/images/456.png">
-        <p class="item">Bother Forum</p>
+        <p class="item">Brother Forum</p>
     </div>
     <div class="topcenter">
 
@@ -51,145 +52,154 @@
             <ol class="list">
                 <li><a href="">我的关注</a></li>
                 <li><a href="">我的收藏</a></li>
-                <li><a href="/center">个人中心</a></li>
-                <li><a href="/manage_blog">帖子管理</a></li>
-                <li><a href="/logout" id="logout">注销</a></li>
+                <li><a href="{{ url_for('center') }}">个人中心</a></li>
+                <li><a href="{{ url_for('manager_blog') }}">帖子管理</a></li>
+                <li><a href="{{ url_for('logout') }}" id="logout">注销</a></li>
             </ol>
         </li>
     </ul>
 </div>
-    <div id="middle">
-        <div class="middleleft">
-            <div class="personal">
-                <div class="up">
-                    <a href=""><img class="blogerimg" src="
+<div id="middle">
+    <div class="middleleft">
+        <div class="personal">
+            <div class="up">
+                <a href=""><img class="blogerimg" src="
                         {% if params.user.img %}
                             {{ params.user.img }}
                         {% else %}
                             ../static/images/1.png
                         {% endif %}
                     " alt=""></a>
-                    <p class="user_name">{{ params.user.uname }}</p>
+                <p class="user_name">{{ params.user.uname }}</p>
+                <a href="#" style="display: none" id="focused_id">{{ params.user.id }}</a>
+                {% if params.my.id!=params.user.id %}
+                    <div id="focus_btn" {% if params.is_focus %} style="background:thistle" {% else %}
+                         style="background:transparent" {% endif %}>{% if params.is_focus %}已关注{% else %}
+                        关注{% endif %}</div>
+                    <div id="massage_btn">私信</div>
+                {% endif %}
+
+            </div>
+            <div class="bottom">
+                <div class="item">
+                    <p>原创</p>
+                    <p class="num1">
+                        {{ params.blogs|length|default(0) }}
+                    </p>
                 </div>
-                <div class="bottom">
-                    <div class="item">
-                        <p>原创</p>
-                        <p class="num1">
-                            {{ params.user.blogs.all()|length|default(0) }}
-                        </p>
-                    </div>
-                    <div class="item">
-                        <p>粉丝</p>
-                        <p class="num2">0</p>
-                    </div>
-                    <div class="item no_top">
-                        <p>喜欢</p>
-                        <p class="num3">0</p>
-                    </div>
-                    <div class="item no_top">
-                        <p>评论</p>
-                        <p  class="num4">
-                            {{ params.user.comments.all()|length|default(0) }}
-                        </p>
-                    </div>
+                <div class="item">
+                    <p>粉丝</p>
+                    <p class="num2">0</p>
+                </div>
+                <div class="item no_top">
+                    <p>喜欢</p>
+                    <p class="num3">0</p>
+                </div>
+                <div class="item no_top">
+                    <p>评论</p>
+                    <p class="num4">
+                        {{ params.user.comments.all()|length|default(0) }}
+                    </p>
                 </div>
             </div>
-            <div id="banner">
-                <img src="../static/images/banner1.jpg" alt="哎呀，图片搞丢了！">
-                <ul>
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
-                    <li>5</li>
-                </ul>
-                <a href="javascript:void(0)" class="left"></a>
-                <a href="javascript:void(0)" class="right"></a>
-            </div>
-            <div class="recommend"></div>
         </div>
-        <div class="middlecenter">
-            <div class="content">
-                <div class="title">
-                    <p class="name">{{ params.blog.title }}</p>
-                    <span>{{ params.blog.time }}</span>
-                    <a href="">{{ params.user.uname }}</a>
-                    <span>阅读：3521</span>
-                    <span class="tiker1">标签：</span>
-                    <span class="tiker2">{{ params.blog.tags }}</span>
-                    <!--<span>网络编程</span>
-                    <span>大神</span>-->
-                </div>
-                <div class="text">
-                    {% for cont in params.content %}
-                        <p>{{ cont }}</p>
-                    {% endfor %}
-                </div>
+        <div id="banner">
+            <img src="../static/images/banner1.jpg" alt="哎呀，图片搞丢了！">
+            <ul>
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+            </ul>
+            <a href="javascript:void(0)" class="left"></a>
+            <a href="javascript:void(0)" class="right"></a>
+        </div>
+        <div class="recommend"></div>
+    </div>
+    <div class="middlecenter">
+        <div class="content">
+            <div class="title">
+                <p class="name">{{ params.blog.title }}</p>
+                <span>{{ params.blog.time }}</span>
+                <a href="">{{ params.user.uname }}</a>
+                <span>阅读：3521</span>
+                <span class="tiker1">标签：</span>
+                <span class="tiker2">{{ params.blog.tags }}</span>
+                <!--<span>网络编程</span>
+                <span>大神</span>-->
             </div>
-            <div class="comment">
-                <div class="img">
-                    <a href=""><img src="
+            <div class="text">
+                {% for cont in params.content %}
+                    <p>{{ cont }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="comment">
+            <div class="img">
+                <a href=""><img src="
                         {% if params.my.img %}
                             {{ params.my.img }}
                         {% else %}
                             ../static/images/icon.png
                         {% endif %}
                     "></a>
-                </div>
-                <form action="/comment" method="post" enctype="application/x-www-form-urlencoded">
-                    <textarea type="txt" name="comment" placeholder="想对作者说点什么?" class="comment_text" maxlength="800"></textarea>>
-                    <label class="word_last">还可以输入<span>800</span>个文字</label>
-                    <input class="kown" type="radio" name="comment_type" value="kown" id="kown" checked><label for="kown">公开评论</label>
-                    <input class="unkown" type="radio" name="comment_type" value="unkown" id="unkown"><label for="unkown">匿名评论</label>
-                    <input type="hidden" name="blog-id" value="{{ params.blog.id }}">
-                    <input type="hidden" name="uid" value="{{ params.my.id }}">
-                    <button>发表评论</button>
-                </form>
-                {% for comm in params.blog.comments %}
-                    <div class="comment_contant">
-                        <img src="
+            </div>
+            <form action="/comment" method="post" enctype="application/x-www-form-urlencoded">
+                <textarea type="txt" name="comment" placeholder="想对作者说点什么?" class="comment_text"
+                          maxlength="800"></textarea>>
+                <label class="word_last">还可以输入<span>800</span>个文字</label>
+                <input class="kown" type="radio" name="comment_type" value="kown" id="kown" checked><label for="kown">公开评论</label>
+                <input class="unkown" type="radio" name="comment_type" value="unkown" id="unkown"><label for="unkown">匿名评论</label>
+                <input type="hidden" name="blog-id" value="{{ params.blog.id }}">
+                <input type="hidden" name="uid" value="{{ params.my.id }}">
+                <button>发表评论</button>
+            </form>
+            {% for comm in params.blog.comments %}
+                <div class="comment_contant">
+                    <img src="
                             {% if params.user_list[loop.index0].img %}
                                 {{ params.user_list[loop.index0].img }}
                             {% else %}
                                 ../static/images/icon.png
                             {% endif %}"
-                             alt="">
-                        <a href="">{{ params.user_list[loop.index0].uname }}</a>
-                        <span class="comment_show">{{ comm.text }}</span>
-                        <span>({{ comm.time }} {{ loop.index }}楼)</span>
-                        <a href="" class="first_a">举报</a>
-                        <a href="">回复</a>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="middleright">
-            <div class="mrtop">
-                <div class="first_img">
-                    <div class="xx">
-                        <label>pathon</label>
-                       <span>展现人性的风采</span>
-                    </div>
+                         alt="">
+                    <a href="">{{ params.user_list[loop.index0].uname }}</a>
+                    <span class="comment_show">{{ comm.text }}</span>
+                    <span>({{ comm.time }} {{ loop.index }}楼)</span>
+                    <a href="" class="first_a">举报</a>
+                    <a href="">回复</a>
                 </div>
-                <div class="second_img">
-                    <div class="yy">
-                        <label>技术宅</label>
-                        <span>拥有机器的思维</span>
-                    </div>
-                </div>
-
-            </div>
-            <div class="mrbottom">
-
-            </div>
+            {% endfor %}
         </div>
     </div>
-    <!--底部页脚-->
-    <div id="bottom">
-        <a href="/about">关于brother forum</a>
-        <span id="copyright">Copyright &copy; 2019 </span>
-        <a href="/index">兄弟论坛</a>
-        <span id="version">版权所有 version1.0</span>
+    <div class="middleright">
+        <div class="mrtop">
+            <div class="first_img">
+                <div class="xx">
+                    <label>pathon</label>
+                    <span>展现人性的风采</span>
+                </div>
+            </div>
+            <div class="second_img">
+                <div class="yy">
+                    <label>技术宅</label>
+                    <span>拥有机器的思维</span>
+                </div>
+            </div>
+
+        </div>
+        <div class="mrbottom">
+
+        </div>
     </div>
+</div>
+<!--底部页脚-->
+<div id="bottom">
+    <a href="/about">关于brother forum</a>
+    <span id="copyright">Copyright &copy; 2019 </span>
+    <a href="/index">兄弟论坛</a>
+    <span id="version">版权所有 version1.0</span>
+</div>
 </body>
 </html>

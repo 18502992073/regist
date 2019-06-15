@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <title>关于兄弟论坛</title>
     <link rel="stylesheet" href="../static/css/about.css" type="text/css">
+    <script src="../static/js/close.js"></script>
 </head>
 <body>
     <div id="title">
         <span>兄弟论坛</span>
         <div id="nav">
-            <a id="a1" href="/login">登录</a>
-            <a id="a2" href="/regist">注册</a>
+            <a id="a2" href="{{ url_for ('index') }}">首页</a>
         </div>
     </div>
     <div id="img"></div>
@@ -18,8 +18,23 @@
         <p>关于我们</p>
     </div>
     <div id="main">
-        <div id="left"></div>
-        <div id="right"></div>
+        <div id="left">
+            <p style="font-size: 22px">&nbsp;&nbsp;&nbsp;&nbsp;兄弟论坛致力于为喜欢互联网开发的开
+                发着提供必要的技术平台支持，无论坛不兄弟，让论坛成为远在天南海北和近在咫尺的人的沟通纽带.</p><br><br>
+            <p style="font-size: 22px">&nbsp;&nbsp;&nbsp;&nbsp;未来的我们将打通国内外的技术交流，
+                展示更加丰富的模块和功能，让用户真正的切实感受到我们的服务带来的自身价值的增长.</p><br>
+            <p style="font-size: 22px">&nbsp;&nbsp;&nbsp;&nbsp;打造国际一流的论坛咨询是我们的任务以及自身价值的体现，
+                兼容并包是我们的特色路线，一枝独秀不是春，百花齐放春满园，加强和国内外的交流和沟通是我们至关重要的价值追求.</p>
+        </div>
+        <div id="right">
+            <h2>团队介绍</h2>
+            <p style="font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;雷林涛</p>
+            <p style="font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;张鹏博</p>
+            <p style="font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;陈宁</p>
+            <p style="font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;王帅</p>
+            <p style="font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;张府涛</p>
+            <p style="font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;辛豪</p>
+        </div>
     </div>
 </body>
 </html>

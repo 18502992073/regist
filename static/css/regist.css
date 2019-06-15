@@ -82,12 +82,12 @@ input:focus{
 #idcode-btn{
     width:100px;
     height:32px;
-    background:grey;
+    background:#fcd6b1;
     font-size:15px;
     text-align:center;
     margin-top:17px;
     margin-left:20px;
-    border:2px solid grey;
+    border:2px solid #fcd6b1;
     border-radius:5px;
 }
 #recept-box{
@@ -106,11 +106,11 @@ input:focus{
 #register-btn{
     width:224px;
     height:50px;
-    background:grey;
+    background:#f7bfba;
     font-size:24px;
     text-align:center;
     margin-top:40px;
-    border:2px solid grey;
+    border:2px solid #f7bfba;
     border-radius:8px;
     color:#696565;
 }

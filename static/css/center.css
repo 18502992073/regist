@@ -113,6 +113,7 @@ body{
     width:30px;
     height:30px;
     display: inline-block;
+    border-radius: 50%;
     /*visibility: visible;*/
 }
 .pic .list{
@@ -267,6 +268,48 @@ h2{
     border-radius: 5px;
     margin-top: 30px;
     margin-left: 280px;
+}
+/*修改手机号*/
+#zone{
+    margin-left: 400px;
+    margin-top: 100px;
+    height:200px;
+    width:600px;
+}
+#zone>p>span{
+    float: left;
+    width:80px;
+    height:30px;
+}
+#zone>p>input{
+    margin-left: 20px;
+    width:400px;
+    height:30px;
+}
+#zone>p>#code{
+   width:280px;
+}
+#submit_btn{
+    width:200px;
+    height:40px;
+    margin-left:350px;
+    background: #94bc93;
+    margin-top: 45px;
+    font-size: 14px;
+}
+#submit_btn:hover{
+    background:#84bc42
+}
+#get_code{
+    width:100px;
+    height:40px;
+    margin-left: 20px;
+    background: #7abcb8;
+    margin-top: 10px;
+    font-size: 14px;
+}
+#get_code:hover{
+    background: #49bc9b
 }
 /*底部*/
 #bottom{
